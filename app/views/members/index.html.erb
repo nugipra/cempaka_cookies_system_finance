@@ -1,0 +1,33 @@
+<p id="notice"><%= notice %></p>
+
+<h1>Members</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Member</th>
+      <th>Fullname</th>
+      <th>Email</th>
+      <th>Upline</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @members.each do |member| %>
+      <tr>
+        <td><%= member.member_id %></td>
+        <td><%= member.fullname %></td>
+        <td><%= member.email %></td>
+        <td><%= member.upline_id %></td>
+        <td><%= link_to 'Show', member %></td>
+        <td><%= link_to 'Edit', edit_member_path(member) %></td>
+        <td><%= link_to 'Destroy', member, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Member', new_member_path %>

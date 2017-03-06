@@ -23,6 +23,17 @@
               <%= link_to "Cempaka Cookies Financial Management System", "/", class: "navbar-brand" %>
             </div>
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+              <% if user_signed_in? %>
+                <ul class="nav navbar-nav">
+                  <li class="<%= params[:controller] == "home" && params[:action] == "index" ? "active" : "" %>">
+                    <%= link_to "Dashboard", "/" %>
+                  </li>
+                  <li class="<%= params[:controller] == "members" ? "active" : "" %>">
+                    <%= link_to "Members", members_path %>
+                  </li>
+                </ul>
+              <% end %>
+
               <ul class="nav navbar-nav navbar-right">
                 <% if user_signed_in? %>
                   <li class="dropdown">
