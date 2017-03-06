@@ -13,7 +13,7 @@
 ActiveRecord::Schema.define(version: 20170306182058) do
 
   create_table "members", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
-    t.integer  "member_id"
+    t.string   "member_id"
     t.string   "fullname"
     t.string   "email"
     t.integer  "upline_id"

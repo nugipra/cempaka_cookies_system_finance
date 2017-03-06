@@ -1,4 +1,5 @@
-<%= form_for(member) do |f| %>
+<%= form_for(member, class: "form-group") do |f| %>
+
   <% if member.errors.any? %>
     <div id="error_explanation">
       <h2><%= pluralize(member.errors.count, "error") %> prohibited this member from being saved:</h2>
@@ -11,27 +12,25 @@
     </div>
   <% end %>
 
-  <div class="field">
-    <%= f.label :member_id %>
-    <%= f.number_field :member_id %>
+  <div class="form-group">
+    <%= f.label :member_id, "Member ID" %>
+    <%= f.text_field :member_id, autofocus: true, class: "form-control" %>
   </div>
 
-  <div class="field">
+  <div class="form-group">
     <%= f.label :fullname %>
-    <%= f.text_field :fullname %>
+    <%= f.text_field :fullname, class: "form-control" %>
   </div>
 
-  <div class="field">
+  <div class="form-group">
     <%= f.label :email %>
-    <%= f.text_field :email %>
+    <%= f.email_field :email, class: "form-control" %>
   </div>
 
-  <div class="field">
+  <div class="form-group">
     <%= f.label :upline_id %>
-    <%= f.number_field :upline_id %>
+    <%= f.number_field :upline_id, class: "form-control" %>
   </div>
 
-  <div class="actions">
-    <%= f.submit %>
-  </div>
+  <button type="submit" class="btn btn-default">Submit</button>
 <% end %>
