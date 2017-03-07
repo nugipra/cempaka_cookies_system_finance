@@ -1,3 +1,19 @@
-<p>
-  Welcome to Cempaka Cookies Financial Management System
-</p>
+Welcome to Cempaka Cookies Financial Management System
+<br/><br/>
+
+<table class="table table-striped">
+  <tbody>
+    <tr>
+      <td class="col-sm-2">Total Members</td>
+      <td><%= Member.count %></td>
+    </tr>
+    <tr>
+      <td>Total Transactions</td>
+      <td><%= Transaction.count %></td>
+    </tr>
+    <tr>
+      <td>Total Gross</td>
+      <td><%= number_with_delimiter Transaction.sum(:total), delimiter: ","  %></td>
+    </tr>
+  </tbody>
+</table>
