@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170306182058) do
+ActiveRecord::Schema.define(version: 20170307003649) do
 
   create_table "members", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string   "member_id"
@@ -19,6 +19,18 @@ ActiveRecord::Schema.define(version: 20170306182058) do
     t.integer  "upline_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "transactions", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.integer  "member_id"
+    t.string   "product_name"
+    t.integer  "price"
+    t.integer  "quantity"
+    t.text     "note",         limit: 65535
+    t.datetime "created_at",                 null: false
+    t.datetime "updated_at",                 null: false
+    t.integer  "total"
+    t.index ["member_id"], name: "index_transactions_on_member_id", using: :btree
   end
 
   create_table "users", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
@@ -38,4 +50,5 @@ ActiveRecord::Schema.define(version: 20170306182058) do
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true, using: :btree
   end
 
+  add_foreign_key "transactions", "members"
 end

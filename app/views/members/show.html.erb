@@ -15,7 +15,7 @@
 
 <p>
   <strong>Upline:</strong>
-  <%= @member.upline_id %>
+  <%= link_to @member.upline.fullname, @member.upline if @member.upline %>
 </p>
 
 <%= link_to 'Edit', edit_member_path(@member) %> |

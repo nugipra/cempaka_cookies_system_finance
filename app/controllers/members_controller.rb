@@ -16,10 +16,12 @@ class MembersController < ApplicationController
   # GET /members/new
   def new
     @member = Member.new
+    @uplines = Member.order("fullname")
   end
 
   # GET /members/1/edit
   def edit
+    @uplines = Member.order("fullname").where("id != ?", @member.id)
   end
 
   # POST /members
@@ -32,6 +34,7 @@ class MembersController < ApplicationController
         format.html { redirect_to @member, notice: 'Member was successfully created.' }
         format.json { render :show, status: :created, location: @member }
       else
+        @uplines = Member.order("fullname")
         format.html { render :new }
         format.json { render json: @member.errors, status: :unprocessable_entity }
       end
@@ -46,6 +49,7 @@ class MembersController < ApplicationController
         format.html { redirect_to @member, notice: 'Member was successfully updated.' }
         format.json { render :show, status: :ok, location: @member }
       else
+        @uplines = Member.order("fullname").where("id != ?", @member.id)
         format.html { render :edit }
         format.json { render json: @member.errors, status: :unprocessable_entity }
       end
