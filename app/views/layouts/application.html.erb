@@ -34,6 +34,9 @@
                   <li class="<%= params[:controller] == "transactions" ? "active" : "" %>">
                     <%= link_to "Transactions", transactions_path %>
                   </li>
+                  <li class="<%= params[:controller] == "search" ? "active" : "" %>">
+                    <%= link_to "Search", search_path %>
+                  </li>
                 </ul>
               <% end %>
 

@@ -1,0 +1,5 @@
+<%= render partial: "form" %>
+
+<h3><%= pluralize @members.count, "member" %> found</h3>
+
+<%= render partial: "/members/list", locals: {members: @members} %>

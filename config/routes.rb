@@ -2,6 +2,8 @@ Rails.application.routes.draw do
   resources :transactions
   resources :members
   get 'home/index'
+  get 'search', to: 'search#index'
+  post 'search/results', to: 'search#results'
 
   devise_for :users
 

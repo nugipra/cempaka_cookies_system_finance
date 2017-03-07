@@ -1,0 +1,20 @@
+<%= search_form_for @q, url: search_results_path, html: { method: :post }, class: "form-group" do |f| %>
+
+  <div class="form-group">
+    <%= f.label "Member ID" %>
+    <%= f.search_field :member_id_cont, autofocus: true, class: "form-control" %>
+  </div>
+
+  <div class="form-group">
+    <%= f.label "Fullname" %>
+    <%= f.search_field :fullname_cont, class: "form-control" %>
+  </div>
+
+  <div class="form-group">
+    <%= f.label "Email" %>
+    <%= f.search_field :email_cont, class: "form-control" %>
+  </div>
+
+  <%= f.submit "Search", class: "btn btn-default" %>
+  <%= link_to "Clear", search_path, class: "btn btn-default" %>
+<% end %>
