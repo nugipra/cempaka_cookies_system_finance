@@ -10,15 +10,19 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170307003649) do
+ActiveRecord::Schema.define(version: 20170307015101) do
 
   create_table "members", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string   "member_id"
     t.string   "fullname"
     t.string   "email"
     t.integer  "upline_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at",                 null: false
+    t.datetime "updated_at",                 null: false
+    t.integer  "lft",                        null: false
+    t.integer  "rgt",                        null: false
+    t.integer  "network_depth",  default: 0, null: false
+    t.integer  "children_count", default: 0, null: false
   end
 
   create_table "transactions", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|

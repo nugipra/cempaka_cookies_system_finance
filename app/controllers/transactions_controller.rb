@@ -14,7 +14,7 @@ class TransactionsController < ApplicationController
 
   # GET /transactions/new
   def new
-    @transaction = Transaction.new
+    @transaction = Transaction.new(member_id: params[:member_id])
   end
 
   # GET /transactions/1/edit

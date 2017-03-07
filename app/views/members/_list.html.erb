@@ -1,0 +1,39 @@
+<%
+  show_network_bonus = local_assigns.has_key?(:show_network_bonus) ? show_network_bonus : false
+%>
+
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>Member ID</th>
+        <th>Fullname</th>
+        <th>Email</th>
+        <th>Upline</th>
+        <% if show_network_bonus %>
+          <th>Depth</th>
+          <th>Bonus</th>
+        <% else %>
+          <th colspan="3"></th>
+        <% end %>
+      </tr>
+    </thead>
+
+    <tbody>
+      <% members.each do |member| %>
+        <tr>
+          <td><%= member.member_id %></td>
+          <td><%= link_to member.fullname, member %></td>
+          <td><%= member.email %></td>
+          <td><%= link_to member.upline.fullname, member.upline if member.upline %></td>
+          <% if show_network_bonus %>
+            <td><%= member.network_depth - upline.network_depth  %></td>
+            <td><%= number_with_delimiter upline.get_network_fee_from_descendant(member), delimiter: "." %></td>
+          <% else %>
+            <td><%= link_to 'Show', member %></td>
+            <td><%= link_to 'Edit', edit_member_path(member) %></td>
+            <td><%= link_to 'Destroy', member, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+          <% end %>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>

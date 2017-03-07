@@ -15,7 +15,7 @@ class MembersController < ApplicationController
 
   # GET /members/new
   def new
-    @member = Member.new
+    @member = Member.new(upline_id: params[:upline_id])
     @uplines = Member.order("fullname")
   end
 

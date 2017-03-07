@@ -1,0 +1,42 @@
+<%
+  show_seller = local_assigns.has_key?(:show_seller) ? show_seller : true
+  show_actions = local_assigns.has_key?(:show_actions) ? show_actions : true
+%>
+
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <% if show_seller %>
+          <th>Seller</th>
+        <% end %>
+        <th>Product name</th>
+        <th>Price</th>
+        <th>Quantity</th>
+        <th>Total</th>
+        <th>Note</th>
+        <% if show_actions %>
+          <th colspan="3"></th>
+        <% end %>
+      </tr>
+    </thead>
+
+    <tbody>
+      <% transactions.each do |transaction| %>
+        <tr>
+          <% if show_seller %>
+            <td><%= link_to transaction.member.fullname, transaction.member %></td>
+          <% end %>
+          <td><%= transaction.product_name %></td>
+          <td><%= number_with_delimiter transaction.price, delimiter: "." %></td>
+          <td><%= transaction.quantity %></td>
+          <td><%= number_with_delimiter transaction.total, delimiter: "."  %></td>
+          <td><%= transaction.note %></td>
+          <% if show_actions %>
+            <td><%= link_to 'Show', transaction %></td>
+            <td><%= link_to 'Edit', edit_transaction_path(transaction) %></td>
+            <td><%= link_to 'Destroy', transaction, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+          <% end %>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>

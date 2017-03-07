@@ -1,29 +1,31 @@
-<p id="notice"><%= notice %></p>
-
-<p>
-  <strong>Seller:</strong>
-  <%= link_to @transaction.member.fullname, @transaction.member %>
-</p>
-
-<p>
-  <strong>Product name:</strong>
-  <%= @transaction.product_name %>
-</p>
-
-<p>
-  <strong>Price:</strong>
-  <%= @transaction.price %>
-</p>
-
-<p>
-  <strong>Quantity:</strong>
-  <%= @transaction.quantity %>
-</p>
-
-<p>
-  <strong>Note:</strong>
-  <%= @transaction.note %>
-</p>
+<table class="table table-striped">
+  <tbody>
+    <tr>
+      <td class="col-sm-2">Seller</td>
+      <td><%= link_to @transaction.member.fullname, @transaction.member %></td>
+    </tr>
+    <tr>
+      <td>Product name</td>
+      <td><%= @transaction.product_name %></td>
+    </tr>
+    <tr>
+      <td>Price</td>
+      <td><%= number_with_delimiter @transaction.price, delimiter: "."  %></td>
+    </tr>
+    <tr>
+      <td>Quantity</td>
+      <td><%= @transaction.quantity %></td>
+    </tr>
+    <tr>
+      <td>Total</td>
+      <td><%= number_with_delimiter @transaction.total, delimiter: "."  %></td>
+    </tr>
+    <tr>
+      <td>Note</td>
+      <td><%= @transaction.note %></td>
+    </tr>
+  </tbody>
+</table>
 
 <%= link_to 'Edit', edit_transaction_path(@transaction) %> |
 <%= link_to 'Back', transactions_path %>

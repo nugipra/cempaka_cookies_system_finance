@@ -1,22 +1,57 @@
-<p>
-  <strong>Member:</strong>
-  <%= @member.member_id %>
-</p>
+<h3>Member Detail</h3>
 
-<p>
-  <strong>Fullname:</strong>
-  <%= @member.fullname %>
-</p>
+<table class="table table-striped">
+  <tbody>
+    <tr>
+      <td class="col-sm-2">Member Id</td>
+      <td><%= @member.member_id %></td>
+    </tr>
+    <tr>
+      <td>Fullname</td>
+      <td><%= link_to @member.fullname, @member %></td>
+    </tr>
+    <tr>
+      <td>Email</td>
+      <td><%= @member.email %></td>
+    </tr>
+    <tr>
+      <td>Upline</td>
+      <td><%= link_to @member.upline.fullname, @member.upline if @member.upline %></td>
+    </tr>
+    <tr>
+      <td>Total downlines</td>
+      <td><%= link_to @member.children.count %></td>
+    </tr>
+    <tr>
+      <td>Total network</td>
+      <td><%= link_to @member.descendants.count %></td>
+    </tr>
+  </tbody>
+</table>
 
-<p>
-  <strong>Email:</strong>
-  <%= @member.email %>
-</p>
+<%= link_to "Add Member", new_member_path(:upline_id => @member.id), class: "btn btn-warning" %>
+<%= link_to "Add Transaction", new_transaction_path(:member_id => @member.id), class: "btn btn-warning" %>
 
-<p>
-  <strong>Upline:</strong>
-  <%= link_to @member.upline.fullname, @member.upline if @member.upline %>
-</p>
+<h3>Transactions</h3>
+<% if @member.transactions.count.zero? %>
+  Your transactions is empty <br/>
+<% else %>
+  <%= render partial: "/transactions/list", locals: {transactions: @member.transactions, show_seller: false} %>
+<% end %>
+Total reseller point : <%= number_with_delimiter @member.reseller_point, delimiter: "." %>
+
+<h3>Network Bonus</h3>
+
+
+<% if @member.descendants.count.zero? %>
+  Your network is empty <br/>
+<% else %>
+  <%= render partial: "/members/list", locals: {show_network_bonus: true, members: @member.descendants, upline: @member} %>
+<% end %>
+
+Total network bonus : <%= number_with_delimiter @member.get_network_fee, delimiter: "." %>
+
+<br/><br/>
 
 <%= link_to 'Edit', edit_member_path(@member) %> |
 <%= link_to 'Back', members_path %>
