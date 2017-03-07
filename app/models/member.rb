@@ -40,7 +40,7 @@ class Member < ApplicationRecord
     self.network_commisions.where(options).sum(:commision)
   end
 
-  private
+  #private
   def generate_network_commisions
     netwotk_upline = self.upline
 
