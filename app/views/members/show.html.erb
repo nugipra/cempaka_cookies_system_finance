@@ -36,12 +36,11 @@
 <% if @member.transactions.count.zero? %>
   Your transactions is empty <br/>
 <% else %>
-  <%= render partial: "/transactions/list", locals: {transactions: @member.transactions, show_seller: false} %>
+  <%= render partial: "/transactions/list", locals: {transactions: @member.transactions, show_seller: false, show_actions: false} %>
 <% end %>
-Total reseller point : <%= number_with_delimiter @member.reseller_point, delimiter: "." %>
+Total reseller point : <b><%= number_with_delimiter @member.reseller_point, delimiter: "," %></b>
 
 <h3>Network Bonus</h3>
-
 
 <% if @member.descendants.count.zero? %>
   Your network is empty <br/>
@@ -49,7 +48,7 @@ Total reseller point : <%= number_with_delimiter @member.reseller_point, delimit
   <%= render partial: "/members/list", locals: {show_network_bonus: true, members: @member.descendants, upline: @member} %>
 <% end %>
 
-Total network bonus : <%= number_with_delimiter @member.get_network_fee, delimiter: "." %>
+Total network bonus : <b><%= number_with_delimiter @member.get_network_fee, delimiter: "," %></b>
 
 <br/><br/>
 

@@ -26,10 +26,10 @@
           <% if show_seller %>
             <td><%= link_to transaction.member.fullname, transaction.member %></td>
           <% end %>
-          <td><%= transaction.product_name %></td>
-          <td><%= number_with_delimiter transaction.price, delimiter: "." %></td>
+          <td><%= link_to transaction.product_name, transaction %></td>
+          <td><%= number_with_delimiter transaction.price, delimiter: "," %></td>
           <td><%= transaction.quantity %></td>
-          <td><%= number_with_delimiter transaction.total, delimiter: "."  %></td>
+          <td><%= number_with_delimiter transaction.total, delimiter: ","  %></td>
           <td><%= transaction.note %></td>
           <% if show_actions %>
             <td><%= link_to 'Show', transaction %></td>

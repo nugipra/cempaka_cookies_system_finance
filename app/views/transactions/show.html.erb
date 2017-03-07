@@ -10,7 +10,7 @@
     </tr>
     <tr>
       <td>Price</td>
-      <td><%= number_with_delimiter @transaction.price, delimiter: "."  %></td>
+      <td><%= number_with_delimiter @transaction.price, delimiter: ","  %></td>
     </tr>
     <tr>
       <td>Quantity</td>
@@ -18,7 +18,7 @@
     </tr>
     <tr>
       <td>Total</td>
-      <td><%= number_with_delimiter @transaction.total, delimiter: "."  %></td>
+      <td><%= number_with_delimiter @transaction.total, delimiter: ","  %></td>
     </tr>
     <tr>
       <td>Note</td>

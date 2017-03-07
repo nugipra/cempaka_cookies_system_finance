@@ -21,13 +21,13 @@
     <tbody>
       <% members.each do |member| %>
         <tr>
-          <td><%= member.member_id %></td>
+          <td><%= link_to member.member_id, member %></td>
           <td><%= link_to member.fullname, member %></td>
           <td><%= member.email %></td>
           <td><%= link_to member.upline.fullname, member.upline if member.upline %></td>
           <% if show_network_bonus %>
             <td><%= member.network_depth - upline.network_depth  %></td>
-            <td><%= number_with_delimiter upline.get_network_fee_from_descendant(member), delimiter: "." %></td>
+            <td><%= number_with_delimiter upline.get_network_fee_from_descendant(member), delimiter: "," %></td>
           <% else %>
             <td><%= link_to 'Show', member %></td>
             <td><%= link_to 'Edit', edit_member_path(member) %></td>
