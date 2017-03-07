@@ -1,9 +1,12 @@
 Rails.application.routes.draw do
   resources :transactions
   resources :members
+  resources :network_commision_payments, only: [:index, :new, :create, :show]
+
   get 'home/index'
   get 'search', to: 'search#index'
   post 'search/results', to: 'search#results'
+  get 'network_commisions/unpaid'
 
   devise_for :users
 

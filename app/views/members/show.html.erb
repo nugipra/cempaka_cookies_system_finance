@@ -1,14 +1,10 @@
-<h3>Member Detail</h3>
+<h2><%= @member.fullname.upcase %></h2>
 
 <table class="table table-striped">
   <tbody>
     <tr>
-      <td class="col-sm-2">Member Id</td>
+      <td class="col-sm-2">Member ID</td>
       <td><%= @member.member_id %></td>
-    </tr>
-    <tr>
-      <td>Fullname</td>
-      <td><%= link_to @member.fullname, @member %></td>
     </tr>
     <tr>
       <td>Email</td>
@@ -24,11 +20,34 @@
     </tr>
     <tr>
       <td>Total network</td>
-      <td><%= link_to @member.descendants.count %></td>
+      <td><%= link_to @total_descendants %></td>
     </tr>
+    <% unless @total_descendants.zero? %>
+      <tr>
+        <td>Total network commisions</td>
+        <td>
+          <%= number_with_delimiter @total_network_commisions, delimiter: "," %>
+        </td>
+      </tr>
+    <% end %>
+    <% unless @total_network_commisions.zero? %>
+      <tr>
+        <td>Total unpaid network commisions</td>
+        <td>
+          <%= number_with_delimiter @total_unpaid_network_commisions, delimiter: "," %>
+          <% unless @total_unpaid_network_commisions.zero? %>
+            <button class="btn btn-primary btn-sm" 
+                    onClick="location.href='<%= new_network_commision_payment_path(member_id: @member.id) %>'">
+              Process Now
+            </button>
+          <% end %>
+        </td>
+      </tr>
+    <% end %>
   </tbody>
 </table>
 
+<%= link_to "Edit", edit_member_path(@member), class: "btn btn-warning" %>
 <%= link_to "Add Member", new_member_path(:upline_id => @member.id), class: "btn btn-warning" %>
 <%= link_to "Add Transaction", new_transaction_path(:member_id => @member.id), class: "btn btn-warning" %>
 
@@ -40,17 +59,40 @@
 <% end %>
 Total reseller point : <b><%= number_with_delimiter @member.reseller_point, delimiter: "," %></b>
 
-<h3>Network Bonus</h3>
+<h3>Network Commisions</h3>
 
 <% if @member.descendants.count.zero? %>
   Your network is empty <br/>
 <% else %>
-  <%= render partial: "/members/list", locals: {show_network_bonus: true, members: @member.descendants, upline: @member} %>
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>Member ID</th>
+        <th>Fullname</th>
+        <th>Upline</th>
+        <th>Depth</th>
+        <th>Commision</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <% @network_commisions.each do |commision| %>
+        <% commision_from = commision.descendant %>
+        <tr>
+          <td><%= link_to commision_from.member_id, commision_from %></td>
+          <td><%= link_to commision_from.fullname, commision_from %></td>
+          <td><%= link_to commision_from.upline.fullname, commision_from.upline if commision_from.upline %></td>
+          <td><%= commision_from.network_depth - @member.network_depth  %></td>
+          <td>
+            <%= number_with_delimiter commision.commision, delimiter: "," %>
+            <% unless commision.paid %>
+              <span class="label label-danger">NOT PAID</span>
+            <% end %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
 <% end %>
 
-Total network bonus : <b><%= number_with_delimiter @member.get_network_fee, delimiter: "," %></b>
-
-<br/><br/>
-
-<%= link_to 'Edit', edit_member_path(@member) %> |
-<%= link_to 'Back', members_path %>
+Total network commisions : <b><%= number_with_delimiter @total_network_commisions , delimiter: "," %></b>

@@ -1,0 +1,55 @@
+<h1>Network commision payment detail</h1>
+
+<table class="table table-striped">
+  <tbody>
+    <tr>
+      <td class="col-sm-2">Paid to</td>
+      <td><%= link_to @member.fullname, @member %></td>
+    </tr>
+    <tr>
+      <td>Payment method</td>
+      <td><%= @network_commission_payment.payment_method %></td>
+    </tr>
+    <tr>
+      <td>Note</td>
+      <td><%= @network_commission_payment.note %></td>
+    </tr>
+    <tr>
+      <td>Processed at</td>
+      <td><%= @network_commission_payment.created_at.in_time_zone("Jakarta").strftime("%Y-%m-%d %H:%M") %></td>
+    </tr>
+  </tbody>
+</table>
+
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th>Member ID</th>
+      <th>Fullname</th>
+      <th>Upline</th>
+      <th>Depth</th>
+      <th>Commision</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @network_commisions.each do |commision| %>
+      <% commision_from = commision.descendant %>
+      <tr>
+        <td><%= link_to commision_from.member_id, commision_from %></td>
+        <td><%= link_to commision_from.fullname, commision_from %></td>
+        <td><%= link_to commision_from.upline.fullname, commision_from.upline if commision_from.upline %></td>
+        <td><%= commision_from.network_depth - @member.network_depth  %></td>
+        <td>
+          <%= number_with_delimiter commision.commision, delimiter: "," %>
+        </td>
+      </tr>
+    <% end %>
+    <tr>
+      <td colspan="4">&nbsp;</td>
+      <td><b><%= number_with_delimiter(@network_commission_payment.total_payment, delimiter: ",") %></b></td>
+    </tr>
+  </tbody>
+</table>
+
+<button class="btn btn-default" onClick="location.href='<%= network_commision_payments_path %>'; return false;">Back</button>

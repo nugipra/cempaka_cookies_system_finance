@@ -1,10 +1,7 @@
-Welcome to Cempaka Cookies Financial Management System
-<br/><br/>
-
 <table class="table table-striped">
   <tbody>
     <tr>
-      <td class="col-sm-2">Total Members</td>
+      <td class="col-sm-3">Total Members</td>
       <td><%= Member.count %></td>
     </tr>
     <tr>
@@ -14,6 +11,24 @@ Welcome to Cempaka Cookies Financial Management System
     <tr>
       <td>Total Gross</td>
       <td><%= number_with_delimiter Transaction.sum(:total), delimiter: ","  %></td>
+    </tr>
+    <tr>
+      <td>Total Unpaid Network Commisions</td>
+      <td>
+        <%= link_to number_with_delimiter(@total_unpaid_commisions, delimiter: ","), "/network_commisions/unpaid"  %>
+      </td>
+    </tr>
+    <tr>
+      <td>Total Paid Network Commisions</td>
+      <td>
+        <%= number_with_delimiter @total_paid_commisions, delimiter: ","  %>
+      </td>
+    </tr>
+    <tr>
+      <td>Total Network Commisions</td>
+      <td>
+        <%= number_with_delimiter @total_commisions, delimiter: ","  %>
+      </td>
     </tr>
   </tbody>
 </table>

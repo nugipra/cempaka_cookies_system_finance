@@ -1,0 +1,33 @@
+<h1>Unpaid network commisions</h1>
+
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th>Member ID</th>
+      <th>Fullname</th>
+      <th>Total unpaid commisions</th>
+      <th></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @members.each do |member| %>
+      <tr>
+        <td><%= link_to member.member_id, member %></td>
+        <td><%= link_to member.fullname, member %></td>
+        <td><%= number_with_delimiter member.total_network_commisions(paid: false), delimiter: "," %></td>
+        <td>
+          <button class="btn btn-primary btn-sm" 
+                  onClick="location.href='<%= new_network_commision_payment_path(member_id: member.id, from: "/network_commisions/unpaid") %>'">
+            Process payment
+          </button>
+        </td>
+      </tr>
+    <% end %>
+    <tr>
+      <td colspan="2">&nbsp;</td>
+      <td><b><%= number_with_delimiter( @total_unpaid_commisions, delimiter: ",") %></b></td>
+      <td></td>
+    </tr>
+  </tbody>
+</table>

@@ -1,12 +1,14 @@
 class Member < ApplicationRecord
   belongs_to :upline, class_name: "Member", required: false
   has_many :transactions
+  has_many :network_commisions, class_name: "NetworkCommision", foreign_key: "member_id"
 
-  validates_presence_of :member_id
+  validates_presence_of :member_id, :fullname
   validates_uniqueness_of :member_id, if: Proc.new{|m| m.member_id.present?}
   validates_uniqueness_of :email, if: Proc.new{|m| m.email.present?}
 
   before_create :set_depth
+  after_create :generate_network_commisions
 
   acts_as_nested_set parent_column: "upline_id"
 
@@ -34,9 +36,22 @@ class Member < ApplicationRecord
     return NETWORK_LEVEL_FEE[level_difference - 1]
   end
 
-  def get_network_fee
-    fee = self.descendants.collect{|d| self.get_network_fee_from_descendant(d)}.sum
-    fee = NETWORK_LEVEL_LIMIT if fee >= NETWORK_LEVEL_LIMIT
-    return fee
+  def total_network_commisions(options = {})
+    self.network_commisions.where(options).sum(:commision)
   end
+
+  private
+  def generate_network_commisions
+    netwotk_upline = self.upline
+
+    while netwotk_upline.present?
+      netwotk_upline.network_commisions.create(
+        descendant_id: self.id,
+        commision: netwotk_upline.get_network_fee_from_descendant(self)
+      )
+
+      netwotk_upline = netwotk_upline.upline
+    end
+  end
+
 end

@@ -11,6 +11,10 @@ class MembersController < ApplicationController
   # GET /members/1
   # GET /members/1.json
   def show
+    @network_commisions = @member.network_commisions.joins(:member).order("created_at desc")
+    @total_network_commisions = @member.total_network_commisions
+    @total_unpaid_network_commisions = @member.total_network_commisions(paid: false)
+    @total_descendants = @member.descendants.count 
   end
 
   # GET /members/new

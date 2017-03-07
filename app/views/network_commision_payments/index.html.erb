@@ -1,0 +1,25 @@
+<h1>Network commision payments</h1>
+
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th>Seller</th>
+      <th>Total payment</th>
+      <th>Payment method</th>
+      <th>Processed at</th>
+      <th></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @network_commision_payments.each do |payment| %>
+      <tr>
+        <td><%= link_to payment.member.fullname, payment.member %></td>
+        <td><%= number_with_delimiter(payment.total_payment, delimiter: ",") %></td>
+        <td><%= payment.payment_method %></td>
+        <td><%= payment.created_at.in_time_zone("Jakarta").strftime("%Y-%m-%d %H:%M") %></td>
+        <td><%= link_to "Show detail", network_commision_payment_path(payment) %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

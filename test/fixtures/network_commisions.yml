@@ -1,0 +1,13 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  member: one
+  descendant: one
+  commision: 1
+  paid: false
+
+two:
+  member: two
+  descendant: two
+  commision: 1
+  paid: false

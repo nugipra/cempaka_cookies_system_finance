@@ -1,0 +1,73 @@
+<h1>Network commision payment</h1>
+
+<%= form_for(@network_commision_payment, class: "form-group") do |f| %>
+  <% if @network_commision_payment.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@network_commision_payment.errors.count, "error") %> prohibited this transaction from being saved:</h2>
+
+      <ul>
+      <% @network_commision_payment.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+   <%= hidden_field_tag :from, params[:from] %>
+
+  <div class="form-group">
+    <%= f.label :member_id, "Member" %>
+    <%= text_field_tag :member_name, @member.fullname, disabled: true, class: "form-control" %>
+    <%= f.hidden_field :member_id %>
+  </div>
+
+  <div class="form-group">
+    <%= f.label :total_payment, "Total payment" %>
+    <%= text_field_tag :total_payment, number_with_delimiter(@total_unpaid_commissions, delimiter: ","), disabled: true, class: "form-control" %>
+    <%= f.hidden_field :total_payment %>
+  </div>
+
+  <div class="form-group">
+    <%= f.label :payment_method, "Payment method" %>
+    <%= f.select :payment_method, options_for_select(["Cash", "Transfer"]), {}, class: "form-control" %>
+  </div>
+
+  <div class="form-group">
+    <%= f.label :note %>
+    <%= f.text_area :note, class: "form-control" %>
+  </div>
+
+  <div class="form-group">
+    <label>Network commision detail</label>
+    <table id="payment_id_detail" class="table table-striped">
+      <thead>
+        <tr>
+          <th>Member ID</th>
+          <th>Fullname</th>
+          <th>Upline</th>
+          <th>Depth</th>
+          <th>Commision</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @network_commisions.each do |commision| %>
+          <% commision_from = commision.descendant %>
+          <tr>
+            <td><%= link_to commision_from.member_id, commision_from %></td>
+            <td><%= link_to commision_from.fullname, commision_from %></td>
+            <td><%= link_to commision_from.upline.fullname, commision_from.upline if commision_from.upline %></td>
+            <td><%= commision_from.network_depth - @member.network_depth  %></td>
+            <td><%= number_with_delimiter commision.commision, delimiter: "," %></td>
+          </tr>
+        <% end %>
+        <tr>
+          <td colspan="4">&nbsp;</td>
+          <td><b><%= number_with_delimiter(@total_unpaid_commissions, delimiter: ",") %></b></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <button type="submit" class="btn btn-default">Process</button>
+  <button class="btn btn-default" onClick="location.href='<%= params[:from] || member_path(@member) %>'; return false;">Cancel</button>
+<% end %>
