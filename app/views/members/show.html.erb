@@ -4,34 +4,37 @@
   <tbody>
     <tr>
       <td class="col-sm-2">Member ID</td>
-      <td><%= @member.member_id %></td>
+      <td class="col-sm-3"><%= @member.member_id %></td>
+      <td class="col-sm-2">Total downlines</td>
+      <td class="col-sm-4"><%= link_to @member.children.count %></td>
     </tr>
     <tr>
       <td>Email</td>
       <td><%= @member.email %></td>
+      <td>Total network</td>
+      <td><%= link_to @total_descendants %></td>
     </tr>
     <tr>
+      <td>Telephone</td>
+      <td><%= @member.telephone %></td>
       <td>Upline</td>
       <td><%= link_to @member.upline.fullname, @member.upline if @member.upline %></td>
     </tr>
     <tr>
-      <td>Total downlines</td>
-      <td><%= link_to @member.children.count %></td>
-    </tr>
-    <tr>
-      <td>Total network</td>
-      <td><%= link_to @total_descendants %></td>
-    </tr>
-    <% unless @total_descendants.zero? %>
-      <tr>
+      <td>Address</td>
+      <td><%= @member.address %></td>
+      <% unless @total_descendants.zero? %>
         <td>Total network commisions</td>
         <td>
           <%= number_with_delimiter @total_network_commisions, delimiter: "," %>
         </td>
-      </tr>
-    <% end %>
-    <% unless @total_network_commisions.zero? %>
+      <% else %>
+        <td colspan="2">&nbsp;</td>
+      <% end %>
+    </tr>
+    <% unless @total_descendants.zero? %>
       <tr>
+        <td colspan="2">&nbsp;</td>
         <td>Total unpaid network commisions</td>
         <td>
           <%= number_with_delimiter @total_unpaid_network_commisions, delimiter: "," %>
@@ -48,7 +51,7 @@
 </table>
 
 <%= link_to "Edit", edit_member_path(@member), class: "btn btn-warning" %>
-<%= link_to "Add Member", new_member_path(:upline_id => @member.id), class: "btn btn-warning" %>
+<%= link_to "Add Member", new_member_path(:upline_id => @member.id, from: member_path(@member)), class: "btn btn-warning" %>
 <%= link_to "Add Transaction", new_transaction_path(:member_id => @member.id), class: "btn btn-warning" %>
 
 <h3>Transactions</h3>

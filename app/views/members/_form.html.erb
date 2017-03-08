@@ -23,14 +23,33 @@
   </div>
 
   <div class="form-group">
+    <%= f.label :address %>
+    <%= f.text_area :address, class: "form-control" %>
+  </div>
+
+  <div class="form-group">
+    <%= f.label :telephone %>
+    <%= f.text_field :telephone, class: "form-control" %>
+  </div>
+
+  <div class="form-group">
     <%= f.label :email %>
     <%= f.email_field :email, class: "form-control" %>
   </div>
 
   <div class="form-group">
     <%= f.label :upline_id %>
-    <%= f.collection_select :upline_id, @uplines, :id, :name_with_member_id, {include_blank: true}, {class: "form-control"} %>
+    <%= f.collection_select :upline_id, @uplines, :id, :name_with_member_id, {include_blank: true}, {class: "form-control", disabled: !@member.new_record?} %>
   </div>
 
-  <button type="submit" class="btn btn-default">Submit</button>
+  <button type="submit" class="btn btn-default">Save</button>
+
+  <%
+    if params[:from].present?
+      back_path = params[:from]
+    else
+      back_path = members_path
+    end
+  %>
+  <button class="btn btn-default" onClick="location.href='<%= back_path %>'; return false;">Cancel</button>
 <% end %>

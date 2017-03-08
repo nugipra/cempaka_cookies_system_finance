@@ -5,13 +5,13 @@ class MembersController < ApplicationController
   # GET /members
   # GET /members.json
   def index
-    @members = Member.all
+    @members = Member.order("created_at")
   end
 
   # GET /members/1
   # GET /members/1.json
   def show
-    @network_commisions = @member.network_commisions.joins(:member).order("created_at desc")
+    @network_commisions = @member.network_commisions.joins(:member).order("id desc")
     @total_network_commisions = @member.total_network_commisions
     @total_unpaid_network_commisions = @member.total_network_commisions(paid: false)
     @total_descendants = @member.descendants.count 
@@ -25,7 +25,7 @@ class MembersController < ApplicationController
 
   # GET /members/1/edit
   def edit
-    @uplines = Member.order("fullname").where("id != ?", @member.id)
+    @uplines = Member.where.not(id: @member.self_and_descendants.collect(&:id)).order("fullname")
   end
 
   # POST /members
@@ -53,7 +53,7 @@ class MembersController < ApplicationController
         format.html { redirect_to @member, notice: 'Member was successfully updated.' }
         format.json { render :show, status: :ok, location: @member }
       else
-        @uplines = Member.order("fullname").where("id != ?", @member.id)
+        @uplines = Member.where.not(id: @member.self_and_descendants.collect(&:id)).order("fullname")
         format.html { render :edit }
         format.json { render json: @member.errors, status: :unprocessable_entity }
       end
@@ -78,6 +78,6 @@ class MembersController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def member_params
-      params.require(:member).permit(:member_id, :fullname, :email, :upline_id)
+      params.require(:member).permit(:member_id, :fullname, :email, :upline_id, :telephone, :address)
     end
 end

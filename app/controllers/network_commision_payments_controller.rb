@@ -45,7 +45,7 @@ class NetworkCommisionPaymentsController < ApplicationController
         render :new
       end
     else
-      redirect_to new_network_commission_payment_path(@member), notice: 'Network commisions was updated during processing payment. Please try to process it once again.'
+      redirect_to new_network_commission_payment_path(member_id: @member.id), notice: 'Network commisions was updated during processing payment. Please try to process it once again.'
     end
   end
 
