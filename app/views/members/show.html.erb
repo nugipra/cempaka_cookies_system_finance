@@ -23,18 +23,18 @@
     <tr>
       <td>Address</td>
       <td><%= @member.address %></td>
-      <% unless @total_descendants.zero? %>
-        <td>Total network commisions</td>
-        <td>
-          <%= number_with_delimiter @total_network_commisions, delimiter: "," %>
-        </td>
-      <% else %>
-        <td colspan="2">&nbsp;</td>
-      <% end %>
+      <td>Wallet balance</td>
+      <td>
+        <%= link_to number_with_delimiter(@member.wallet_balance, delimiter: ","), wallet_transactions_member_path(@member) %>
+      </td>
     </tr>
     <% unless @total_descendants.zero? %>
       <tr>
-        <td colspan="2">&nbsp;</td>
+        <td>Total network commisions</td>
+        <td colspan=3>
+          <%= number_with_delimiter @total_network_commisions, delimiter: "," %>
+        </td>
+        <% if false %>
         <td>Total unpaid network commisions</td>
         <td>
           <%= number_with_delimiter @total_unpaid_network_commisions, delimiter: "," %>
@@ -45,6 +45,7 @@
             </button>
           <% end %>
         </td>
+        <% end %>
       </tr>
     <% end %>
   </tbody>
@@ -88,9 +89,6 @@ Total reseller point : <b><%= number_with_delimiter @member.reseller_point, deli
           <td><%= commision_from.network_depth - @member.network_depth  %></td>
           <td>
             <%= number_with_delimiter commision.commision, delimiter: "," %>
-            <% unless commision.paid %>
-              <span class="label label-danger">NOT PAID</span>
-            <% end %>
           </td>
         </tr>
       <% end %>

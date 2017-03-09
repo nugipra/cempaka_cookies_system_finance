@@ -1,0 +1,15 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  member: one
+  remark: MyText
+  amount: 1
+  balance: 1
+  transaction_type: MyString
+
+two:
+  member: two
+  remark: MyText
+  amount: 1
+  balance: 1
+  transaction_type: MyString

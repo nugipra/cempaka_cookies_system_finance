@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170308230345) do
+ActiveRecord::Schema.define(version: 20170309021908) do
 
   create_table "members", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string   "member_id"
@@ -25,6 +25,7 @@ ActiveRecord::Schema.define(version: 20170308230345) do
     t.integer  "children_count",               default: 0, null: false
     t.text     "address",        limit: 65535
     t.string   "telephone"
+    t.integer  "wallet_balance",               default: 0
   end
 
   create_table "network_commision_payments", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
@@ -78,7 +79,18 @@ ActiveRecord::Schema.define(version: 20170308230345) do
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true, using: :btree
   end
 
+  create_table "wallet_transactions", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.integer  "member_id"
+    t.text     "remarks",    limit: 65535
+    t.integer  "amount"
+    t.integer  "balance"
+    t.datetime "created_at",               null: false
+    t.datetime "updated_at",               null: false
+    t.index ["member_id"], name: "index_wallet_transactions_on_member_id", using: :btree
+  end
+
   add_foreign_key "network_commision_payments", "members"
   add_foreign_key "network_commisions", "members"
   add_foreign_key "transactions", "members"
+  add_foreign_key "wallet_transactions", "members"
 end

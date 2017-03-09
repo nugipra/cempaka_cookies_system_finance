@@ -1,0 +1,70 @@
+<h2>WALLET</h2>
+
+<div class="panel panel-default">
+  <div class="panel-heading">
+    <h3 class="panel-title">Info</h3>
+  </div>
+  <div class="panel-body">
+    <div class="row">
+      <div class="col-md-2">Owner</div>
+      <div class="col-md-10"><%= link_to @member.fullname, @member %></div>
+    </div>
+    <br/>
+    <div class="row">
+      <div class="col-md-2">Wallet Balance</div>
+      <div class="col-md-10"><%= number_with_delimiter @member.wallet_balance, delimiter: "," %></div>
+    </div>
+    <br/>
+    <div class="row">
+      <div class="col-md-12">
+        <button class="btn btn-success" onClick="alert('coming soon !'); return false;">Deposit</button>
+        <% unless @member.wallet_balance.zero? %>
+          <button class="btn btn-danger" onClick="alert('coming soon !'); return false;">Withdraw</button>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="panel panel-default">
+  <div class="panel-heading">
+    <h3 class="panel-title">History</h3>
+  </div>
+  <div class="panel-body">
+    <% if @wallet_transactions.size.zero? %>
+      No history for this wallet
+    <% else %>
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th class="col-sm-2">Time</th>
+            <th class="col-sm-2">Amount</th>
+            <th class="col-sm-2">Balance</th>
+            <th class="col-sm-6">Remarks</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <% @wallet_transactions.each do |wallet_transaction| %>
+            <tr>
+              <td><%= wallet_transaction.created_at.in_time_zone("Jakarta").strftime("%Y-%m-%d %H:%M") %></td>
+              <td>
+                <% if wallet_transaction.amount >= 0 %>
+                  <span class="text-primary">
+                    <strong>+<%= number_with_delimiter wallet_transaction.amount, delimiter: "," %></strong>
+                  </span>
+                <% else %>
+                  <span class="text-danger">
+                    <strong><%= number_with_delimiter wallet_transaction.amount, delimiter: "," %></strong>
+                  </span>
+                <% end %>
+              </td>
+              <td><strong><%= number_with_delimiter wallet_transaction.balance, delimiter: "," %></strong></td>
+              <td><%= wallet_transaction.remarks %></td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    <% end %>
+  </div>
+</div>

@@ -1,6 +1,10 @@
 Rails.application.routes.draw do
   resources :transactions
-  resources :members
+  resources :members do
+    member do
+      get :wallet_transactions
+    end
+  end
   resources :network_commision_payments, only: [:index, :new, :create, :show]
 
   get 'home/index'
