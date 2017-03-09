@@ -1,5 +1,6 @@
 <%
   show_network_bonus = local_assigns.has_key?(:show_network_bonus) ? show_network_bonus : false
+  show_wallet_balance = local_assigns.has_key?(:show_wallet_balance) ? show_wallet_balance : false
 %>
 
   <table class="table table-striped">
@@ -9,6 +10,9 @@
         <th>Fullname</th>
         <th>Email</th>
         <th>Upline</th>
+        <% if show_wallet_balance %>
+          <th>Wallet balance</th>
+        <% end %>
         <% if show_network_bonus %>
           <th>Depth</th>
           <th>Bonus</th>
@@ -25,6 +29,9 @@
           <td><%= link_to member.fullname, member %></td>
           <td><%= member.email %></td>
           <td><%= link_to member.upline.fullname, member.upline if member.upline %></td>
+          <% if show_wallet_balance %>
+            <td><%= link_to number_with_delimiter(member.wallet_balance, delimiter: ","), wallet_transactions_member_path(member) %></td>
+          <% end %>
           <% if show_network_bonus %>
             <td><%= member.network_depth - upline.network_depth  %></td>
             <td><%= number_with_delimiter upline.get_network_fee_from_descendant(member), delimiter: "," %></td>

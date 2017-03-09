@@ -2,4 +2,4 @@
 
 <h3><%= pluralize @members.count, "member" %> found</h3>
 
-<%= render partial: "/members/list", locals: {members: @members} %>
+<%= render partial: "/members/list", locals: {members: @members, show_wallet_balance: true} %>

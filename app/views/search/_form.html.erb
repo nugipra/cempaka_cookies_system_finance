@@ -1,18 +1,28 @@
 <%= search_form_for @q, url: search_results_path, html: { method: :post }, class: "form-group" do |f| %>
 
   <div class="form-group">
-    <%= f.label "Member ID" %>
+    <%= f.label :member_id, "Member ID" %>
     <%= f.search_field :member_id_cont, autofocus: true, class: "form-control" %>
   </div>
 
   <div class="form-group">
-    <%= f.label "Fullname" %>
+    <%= f.label :fullname, "Fullname" %>
     <%= f.search_field :fullname_cont, class: "form-control" %>
   </div>
 
   <div class="form-group">
     <%= f.label "Email" %>
     <%= f.search_field :email_cont, class: "form-control" %>
+  </div>
+
+
+  <div class="form-group">
+    <%= f.label "Wallet balance" %>
+    <div class="input-group">
+      <%= f.search_field :wallet_balance_gteq, class: "form-control", placeholder: "From" %>
+      <span class="input-group-addon">-</span>
+      <%= f.search_field :wallet_balance_lteq, class: "form-control", placeholder: "To" %>
+    </div>
   </div>
 
   <%= f.submit "Search", class: "btn btn-default" %>
