@@ -13,15 +13,9 @@
       <td><%= number_with_delimiter Transaction.sum(:total), delimiter: ","  %></td>
     </tr>
     <tr>
-      <td>Total Unpaid Network Commisions</td>
+      <td>Total Wallet Balance</td>
       <td>
-        <%= link_to number_with_delimiter(@total_unpaid_commisions, delimiter: ","), "/network_commisions/unpaid"  %>
-      </td>
-    </tr>
-    <tr>
-      <td>Total Paid Network Commisions</td>
-      <td>
-        <%= number_with_delimiter @total_paid_commisions, delimiter: ","  %>
+        <%= number_with_delimiter @total_wallet_balance, delimiter: ","  %>
       </td>
     </tr>
     <tr>

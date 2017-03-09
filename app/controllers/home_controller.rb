@@ -3,7 +3,6 @@ class HomeController < ApplicationController
 
   def index
     @total_commisions = NetworkCommision.sum(:commision)
-    @total_paid_commisions = NetworkCommision.where(paid: true).sum(:commision)
-    @total_unpaid_commisions = NetworkCommision.where(paid: false).sum(:commision)
+    @total_wallet_balance = Member.sum(:wallet_balance)
   end
 end

@@ -63,11 +63,7 @@ class Member < ApplicationRecord
 
   def generate_wallet_transactions_from_network_commisions
     self.network_commisions.each do |nc|
-      self.wallet_transactions.create(
-        amount: nc.commision,
-        remarks: "Network commision : #{nc.descendant.fullname} joined as new reseller",
-        created_at: nc.created_at
-      )
+      nc.generate_wallet_transaction
     end
   end
 
