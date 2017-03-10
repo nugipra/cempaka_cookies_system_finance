@@ -19,6 +19,7 @@ Rails.application.routes.draw do
   get 'home/index'
   get 'search', to: 'search#index'
   post 'search/results', to: 'search#results'
+  get 'search/results', to: 'search#results'
   get 'network_commisions/unpaid'
 
   devise_for :users

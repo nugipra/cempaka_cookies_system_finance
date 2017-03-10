@@ -44,3 +44,5 @@
       <% end %>
     </tbody>
   </table>
+
+  <%= will_paginate @members, class: 'pagination', params: {q: params[:q]} %>

@@ -7,6 +7,6 @@ class SearchController < ApplicationController
 
   def results
     @q = Member.ransack(params[:q])
-    @members = @q.result(distinct: true)
+    @members = @q.result(distinct: true).paginate(:page => params[:page], :per_page => 20)
   end
 end
