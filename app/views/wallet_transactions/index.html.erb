@@ -60,7 +60,18 @@
                 <% end %>
               </td>
               <td><strong><%= number_with_delimiter wallet_transaction.balance, delimiter: "," %></strong></td>
-              <td><%= wallet_transaction.transaction_type.titleize %> : <%= wallet_transaction.remarks %></td>
+              <td>
+                <% if wallet_transaction.remarks_object_type == "Member" %>
+                  <%= wallet_transaction.transaction_type.titleize %> :
+                  <%= link_to wallet_transaction.remarks_object.fullname, "/members/#{wallet_transaction.remarks_object_id}" %>
+                  <%= wallet_transaction.remarks %>
+               <% elsif wallet_transaction.remarks_object_type == "Transaction" %>
+                  <%= wallet_transaction.transaction_type.titleize %> :
+                  <%= link_to wallet_transaction.remarks, transaction_path(wallet_transaction.remarks_object, from: wallet_transactions_path(@member)) %>
+                <% else %>
+                  <%= wallet_transaction.transaction_type.titleize %> : <%= wallet_transaction.remarks %>
+                <% end %>
+              </td>
             </tr>
           <% end %>
         </tbody>

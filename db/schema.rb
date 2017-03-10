@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170309021908) do
+ActiveRecord::Schema.define(version: 20170310162045) do
 
   create_table "members", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string   "member_id"
@@ -56,9 +56,10 @@ ActiveRecord::Schema.define(version: 20170309021908) do
     t.integer  "price"
     t.integer  "quantity"
     t.text     "note",         limit: 65535
-    t.datetime "created_at",                 null: false
-    t.datetime "updated_at",                 null: false
+    t.datetime "created_at",                                  null: false
+    t.datetime "updated_at",                                  null: false
     t.integer  "total"
+    t.string   "payment_type",               default: "cash"
     t.index ["member_id"], name: "index_transactions_on_member_id", using: :btree
   end
 
@@ -81,12 +82,14 @@ ActiveRecord::Schema.define(version: 20170309021908) do
 
   create_table "wallet_transactions", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.integer  "member_id"
-    t.text     "remarks",          limit: 65535
+    t.text     "remarks",             limit: 65535
     t.integer  "amount"
     t.integer  "balance"
     t.string   "transaction_type"
-    t.datetime "created_at",                     null: false
-    t.datetime "updated_at",                     null: false
+    t.datetime "created_at",                        null: false
+    t.datetime "updated_at",                        null: false
+    t.integer  "remarks_object_id"
+    t.string   "remarks_object_type"
     t.index ["member_id"], name: "index_wallet_transactions_on_member_id", using: :btree
   end
 

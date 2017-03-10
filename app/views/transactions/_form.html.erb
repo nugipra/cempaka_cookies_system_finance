@@ -32,6 +32,11 @@
   </div>
 
   <div class="form-group">
+    <%= f.label :payment_type, "Payment type" %>
+    <%= f.select :payment_type, options_for_select([["Cash", "cash"], ["Transfer", "transfer"], ["Wallet", "wallet"]], f.object.payment_type), {}, class: "form-control" %>
+  </div>
+
+  <div class="form-group">
     <%= f.label :note %>
     <%= f.text_area :note, class: "form-control" %>
   </div>

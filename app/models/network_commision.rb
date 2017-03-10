@@ -5,11 +5,14 @@ class NetworkCommision < ApplicationRecord
   after_create :generate_wallet_transaction
 
   def generate_wallet_transaction
-    member.wallet_transactions.create(
+    WalletTransaction.create(
+      member_id: self.member_id,
       amount: self.commision,
-      remarks: "#{self.descendant.fullname} joined as new reseller",
+      remarks: "joined as new reseller",
       created_at: self.created_at,
-      transaction_type: "network commision"
+      transaction_type: "network commision",
+      remarks_object_id: self.descendant_id,
+      remarks_object_type: "Member"
     )
   end
 end

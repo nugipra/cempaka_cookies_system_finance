@@ -1,5 +1,6 @@
 class WalletTransaction < ApplicationRecord
   belongs_to :member
+  belongs_to :remarks_object, required: false, polymorphic: true
 
   validates :amount, :transaction_type, presence: true
   validates :amount, numericality: true, if: Proc.new{|wt| wt.amount.present?}
@@ -9,7 +10,7 @@ class WalletTransaction < ApplicationRecord
   before_create :adjust_amount, :update_balance 
   after_create :update_member_wallet_balance
 
-  VALID_TRANSACTION_TYPES = ["network commision", "withdraw", "deposit", "referral commision"]
+  VALID_TRANSACTION_TYPES = ["network commision", "withdraw", "deposit", "referral commision", "transaction payment"]
 
   private
     def wallet_transaction_type_should_be_valid

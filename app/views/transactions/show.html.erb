@@ -21,11 +21,21 @@
       <td><%= number_with_delimiter @transaction.total, delimiter: ","  %></td>
     </tr>
     <tr>
+      <td>Payment type</td>
+      <td><%= @transaction.payment_type.titleize %></td>
+    </tr>
+    <tr>
       <td>Note</td>
       <td><%= @transaction.note %></td>
     </tr>
   </tbody>
 </table>
 
-<%= link_to 'Edit', edit_transaction_path(@transaction) %> |
-<%= link_to 'Back', transactions_path %>
+  <%
+    if params[:from].present?
+      back_path = params[:from]
+    else
+      back_path = transactions_path
+    end
+  %>
+<button class="btn btn-default" onClick="location.href='<%= back_path %>'; return false;">Back</button>

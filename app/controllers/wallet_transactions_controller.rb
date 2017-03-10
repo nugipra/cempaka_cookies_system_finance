@@ -4,7 +4,7 @@ class WalletTransactionsController < ApplicationController
   before_action :authenticate_wallet_session, except: [:verify, :do_verify]
 
   def index
-    @wallet_transactions = @member.wallet_transactions.order("id DESC").paginate(:page => params[:page], :per_page => 15)
+    @wallet_transactions = @member.wallet_transactions.includes(:remarks_object).order("id DESC").paginate(:page => params[:page], :per_page => 15)
   end
 
   def new
