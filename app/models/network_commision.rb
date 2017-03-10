@@ -2,7 +2,7 @@ class NetworkCommision < ApplicationRecord
   belongs_to :member
   belongs_to :descendant, class_name: "Member"
 
-  after_create :generate_network_commision
+  after_create :generate_wallet_transaction
 
   def generate_wallet_transaction
     member.wallet_transactions.create(

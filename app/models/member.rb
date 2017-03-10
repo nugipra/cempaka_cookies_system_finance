@@ -49,15 +49,17 @@ class Member < ApplicationRecord
 
   #private
   def generate_network_commisions
-    netwotk_upline = self.upline
+    network_upline = self.upline
 
-    while netwotk_upline.present?
-      netwotk_upline.network_commisions.create(
+    levels = 1
+    while levels <= 10 && network_upline.present?
+      network_upline.network_commisions.create(
         descendant_id: self.id,
-        commision: netwotk_upline.get_network_fee_from_descendant(self)
+        commision: network_upline.get_network_fee_from_descendant(self)
       )
 
-      netwotk_upline = netwotk_upline.upline
+      netwotk_upline = network_upline.upline
+      levels += 1
     end
   end
 
