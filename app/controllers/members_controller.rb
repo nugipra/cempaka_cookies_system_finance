@@ -1,6 +1,6 @@
 class MembersController < ApplicationController
   before_action :authenticate_user!
-  before_action :set_member, only: [:show, :edit, :update, :destroy, :wallet_transactions]
+  before_action :set_member, only: [:show, :edit, :update, :destroy]
 
   # GET /members
   # GET /members.json
@@ -68,10 +68,6 @@ class MembersController < ApplicationController
       format.html { redirect_to members_url, notice: 'Member was successfully destroyed.' }
       format.json { head :no_content }
     end
-  end
-
-  def wallet_transactions
-    @wallet_transactions = @member.wallet_transactions.order("id DESC")
   end
 
   private

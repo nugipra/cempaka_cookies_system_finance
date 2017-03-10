@@ -12,14 +12,14 @@
     <br/>
     <div class="row">
       <div class="col-md-2">Wallet Balance</div>
-      <div class="col-md-10"><%= number_with_delimiter @member.wallet_balance, delimiter: "," %></div>
+      <div class="col-md-10"><strong><%= number_with_delimiter @member.wallet_balance, delimiter: "," %></strong></div>
     </div>
     <br/>
     <div class="row">
       <div class="col-md-12">
-        <button class="btn btn-success" onClick="alert('coming soon !'); return false;">Deposit</button>
+        <button class="btn btn-success" onClick="location.href='<%= new_wallet_transaction_path(@member, type: 'deposit') %>'; return false;">Deposit</button>
         <% unless @member.wallet_balance.zero? %>
-          <button class="btn btn-danger" onClick="alert('coming soon !'); return false;">Withdraw</button>
+          <button class="btn btn-danger" onClick="location.href='<%= new_wallet_transaction_path(@member, type: 'withdraw') %>'; return false;">Withdraw</button>
         <% end %>
       </div>
     </div>
@@ -60,11 +60,13 @@
                 <% end %>
               </td>
               <td><strong><%= number_with_delimiter wallet_transaction.balance, delimiter: "," %></strong></td>
-              <td><%= wallet_transaction.remarks %></td>
+              <td><%= wallet_transaction.transaction_type.titleize %> : <%= wallet_transaction.remarks %></td>
             </tr>
           <% end %>
         </tbody>
       </table>
+
+      <%= will_paginate @wallet_transactions, class: 'pagination', :previous_label => 'Newer history', :next_label => 'Older history' %>
     <% end %>
   </div>
 </div>

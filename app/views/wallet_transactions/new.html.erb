@@ -1,0 +1,59 @@
+<h1><%= params[:type].titleize %> fund</h1>
+
+<%= form_for(@wallet_transaction, url: wallet_transactions_path(@member), class: "form-group") do |f| %>
+  <%= hidden_field_tag :type, params[:type] %>
+  <%= f.hidden_field :transaction_type, value: params[:type] %>
+
+  <% if @wallet_transaction.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@wallet_transaction.errors.count, "error") %> prohibited this member from being saved:</h2>
+
+      <ul>
+      <% @wallet_transaction.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="form-group">
+    <%= f.label :member_id, "Member" %>
+    <%= text_field_tag :member, @member.fullname, class: "form-control", disabled: true  %>
+  </div>
+
+  <div class="form-group">
+    <%= f.label :wallet_balance, "Wallet balance" %>
+    <%= text_field_tag :member_wallet, number_with_delimiter(@member.wallet_balance, delimiter: ","), class: "form-control", disabled: true  %>
+  </div>
+
+  <div class="form-group">
+    <%= f.label :amount, params[:type] == "withdraw" ? "Withdrawal amount" : "Deposit amount" %>
+    <% if params[:type] == "withdraw" %>
+      <%= f.number_field :amount, class: "form-control", step: 1, max: @member.wallet_balance %>
+    <% else %>
+      <%= f.number_field :amount, class: "form-control", step: 1 %>
+    <% end %>
+  </div>
+
+  <div class="form-group">
+    <%= label_tag :transaction_type, "#{params[:type].titleize} type" %>
+    <%= select_tag :transaction_type, options_for_select(["Cash", "Transfer"]), class: "form-control" %>
+  </div>
+  
+
+  <div class="form-group">
+    <%= f.label :remarks, "Additional description" %>
+    <%= f.text_area :remarks, class: "form-control" %>
+  </div>
+
+  <button type="submit" class="btn btn-default">Save</button>
+
+  <%
+    if params[:from].present?
+      back_path = params[:from]
+    else
+      back_path = members_path
+    end
+  %>
+  <button class="btn btn-default" onClick="location.href='<%= wallet_transactions_path(@member) %>'; return false;">Cancel</button>
+<% end %>

@@ -81,11 +81,12 @@ ActiveRecord::Schema.define(version: 20170309021908) do
 
   create_table "wallet_transactions", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.integer  "member_id"
-    t.text     "remarks",    limit: 65535
+    t.text     "remarks",          limit: 65535
     t.integer  "amount"
     t.integer  "balance"
-    t.datetime "created_at",               null: false
-    t.datetime "updated_at",               null: false
+    t.string   "transaction_type"
+    t.datetime "created_at",                     null: false
+    t.datetime "updated_at",                     null: false
     t.index ["member_id"], name: "index_wallet_transactions_on_member_id", using: :btree
   end
 

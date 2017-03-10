@@ -30,7 +30,7 @@
           <td><%= member.email %></td>
           <td><%= link_to member.upline.fullname, member.upline if member.upline %></td>
           <% if show_wallet_balance %>
-            <td><%= link_to number_with_delimiter(member.wallet_balance, delimiter: ","), wallet_transactions_member_path(member) %></td>
+            <td><%= link_to number_with_delimiter(member.wallet_balance, delimiter: ","), wallet_transactions_path(member) %></td>
           <% end %>
           <% if show_network_bonus %>
             <td><%= member.network_depth - upline.network_depth  %></td>

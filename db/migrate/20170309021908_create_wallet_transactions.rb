@@ -5,6 +5,7 @@ class CreateWalletTransactions < ActiveRecord::Migration[5.0]
       t.text :remarks
       t.integer :amount
       t.integer :balance
+      t.string :transaction_type
 
       t.timestamps
     end

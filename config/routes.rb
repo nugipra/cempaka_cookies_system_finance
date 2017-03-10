@@ -1,8 +1,17 @@
 Rails.application.routes.draw do
+  get 'wallet_transactions/index'
+
+  get 'wallet_transactions/new'
+
   resources :transactions
   resources :members do
     member do
-      get :wallet_transactions
+      resources :wallet_transactions, only: [:index, :new, :create] do
+        collection do
+          get :verify
+          patch :do_verify
+        end
+      end
     end
   end
   resources :network_commision_payments, only: [:index, :new, :create, :show]

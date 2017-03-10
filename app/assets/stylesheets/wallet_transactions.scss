@@ -1,0 +1,26 @@
+// Place all the styles related to the wallet_transactions controller here.
+// They will automatically be included in application.css.
+// You can use Sass (SCSS) here: http://sass-lang.com/
+
+
+.pagination{
+  text-align: center;
+  .previous_page, .next_page, em, a{
+    display: inline-block;
+    background: #fff;
+    padding: 10px 15px;
+    margin-top: 10px;
+  }
+	
+  a {
+    border: 1px solid #ddd;
+    transition: 0.5s border;
+    &:hover{
+      border: 1px solid #0070ba;
+    }
+  }
+
+  .disabled{
+    color: #ddd;
+  }
+}
