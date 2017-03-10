@@ -58,7 +58,7 @@ class Member < ApplicationRecord
         commision: network_upline.get_network_fee_from_descendant(self)
       )
 
-      netwotk_upline = network_upline.upline
+      network_upline = network_upline.upline
       levels += 1
     end
   end
