@@ -68,7 +68,7 @@ class WalletTransactionsController < ApplicationController
 
     def authenticate_wallet_session
       unless wallet_session_valid?
-        redirect_to verify_wallet_transactions_path(@member), notice: 'Please re-enter your password to access WALLET section.'
+        redirect_to verify_wallet_transactions_path(@member)
         return
       else
         session[:accessing_wallet_time] = Time.now.to_i
