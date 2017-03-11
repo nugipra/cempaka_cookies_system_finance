@@ -63,9 +63,9 @@ class MembersController < ApplicationController
   # DELETE /members/1
   # DELETE /members/1.json
   def destroy
-    @member.destroy
+    @member.destroy unless @member.core_member?
     respond_to do |format|
-      format.html { redirect_to members_url, notice: 'Member was successfully destroyed.' }
+      format.html { redirect_to members_url, notice: "Member was#{@member.core_member? ? ' not' : ''} successfully destroyed."}
       format.json { head :no_content }
     end
   end
