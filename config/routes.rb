@@ -34,4 +34,10 @@ Rails.application.routes.draw do
     end
   end
 
+  resource :user, only: [:edit] do
+    collection do
+      patch 'update_password'
+    end
+  end
+
 end

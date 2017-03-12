@@ -1,0 +1,35 @@
+<h1>Change password</h1>
+
+<%= form_for(@user, :url => { :action => "update_password" }, class: "form-group" ) do |f| %>
+  <% if @user.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@user.errors.count, "error") %> prohibited password from being saved:</h2>
+
+      <ul>
+      <% @user.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="form-group">
+    <%= label_tag :user_emaill,"Email" %>
+    <%= text_field_tag :email, @user.email, class: "form-control", disabled: true %>
+  </div>
+  <div class="form-group">
+    <%= f.label :current_password %>
+    <%= f.password_field :current_password, autofocus: true, class: "form-control" %>
+    <span class="help-block">We need your current password to confirm your changes</span>
+  </div>
+  <div class="form-group">
+    <%= f.label :password, "Password" %>
+    <%= f.password_field :password, :autocomplete => "off", class: "form-control"  %>
+  </div>
+  <div class="form-group">
+    <%= f.label :password_confirmation %>
+    <%= f.password_field :password_confirmation, class: "form-control" %>
+  </div>
+
+  <button type="submit" class="btn btn-default">Update password</button>
+<% end %>
