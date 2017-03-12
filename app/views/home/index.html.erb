@@ -13,15 +13,21 @@
       <td><%= number_with_delimiter Transaction.sum(:total), delimiter: ","  %></td>
     </tr>
     <tr>
-      <td>Total Wallet Balance</td>
-      <td>
-        <%= number_with_delimiter @total_wallet_balance, delimiter: ","  %>
-      </td>
-    </tr>
-    <tr>
       <td>Total Network Commisions</td>
       <td>
         <%= number_with_delimiter @total_commisions, delimiter: ","  %>
+      </td>
+    </tr>
+    <tr>
+      <td>Total Web Development Commisions</td>
+      <td>
+        <%= number_with_delimiter @total_web_dev_commisions, delimiter: ","  %>
+      </td>
+    </tr>
+    <tr>
+      <td>Total Wallet Balance</td>
+      <td>
+        <%= number_with_delimiter @total_wallet_balance, delimiter: ","  %>
       </td>
     </tr>
   </tbody>

@@ -1,6 +1,8 @@
 class MembersController < ApplicationController
   before_action :authenticate_user!
-  before_action :set_member, only: [:show, :edit, :update, :destroy]
+  before_action :set_member, only: [
+    :show, :edit, :update, :destroy, :network_commisions, :web_development_commisions
+  ]
 
   # GET /members
   # GET /members.json
@@ -11,9 +13,19 @@ class MembersController < ApplicationController
   # GET /members/1
   # GET /members/1.json
   def show
-    @network_commisions = @member.network_commisions.joins(:member).order("id desc")
+    @network_commisions_limit = 10
+    @network_commisions = @member.network_commisions.joins(:member).order("id desc").limit(@network_commisions_limit)
+    @show_view_all_network_commisions = @member.network_commisions.count > @network_commisions_limit
+
     @total_network_commisions = @member.total_network_commisions
     @total_descendants = @member.descendants.count 
+
+    if @member.web_dev?
+      @latest_members_limit = 10
+      @latest_members = Member.where.not(member_id: Member::CORE_MEMBER_IDS).order("id desc").limit(@latest_members_limit)
+      @show_view_all_network_commisions = Member.where.not(member_id: Member::CORE_MEMBER_IDS).count > @latest_members_limit
+      @total_web_dev_commisions = WalletTransaction.where(member_id: @member.id, transaction_type: "web development commision").sum(:amount)
+    end
   end
 
   # GET /members/new
@@ -72,6 +84,21 @@ class MembersController < ApplicationController
       format.html { redirect_to members_url, notice: "Member was#{@member.core_member? ? ' not' : ''} successfully destroyed."}
       format.json { head :no_content }
     end
+  end
+
+  def network_commisions
+    @network_commisions = @member.network_commisions.joins(:member).order("id desc").paginate(:page => params[:page], :per_page => 30)
+    @total_network_commisions = @member.total_network_commisions
+  end
+
+  def web_development_commisions
+    unless @member.web_dev?
+      redirect_to @member
+      return
+    end
+
+    @latest_members = Member.where.not(member_id: Member::CORE_MEMBER_IDS).order("id desc").paginate(:page => params[:page], :per_page => 30)
+    @total_web_dev_commisions = WalletTransaction.where(member_id: @member.id, transaction_type: "web development commision").sum(:amount)
   end
 
   private

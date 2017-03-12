@@ -6,6 +6,10 @@ Rails.application.routes.draw do
   resources :transactions
   resources :members do
     member do
+      get :network_commisions
+      get :web_development_commisions
+    end
+    member do
       resources :wallet_transactions, only: [:index, :new, :create] do
         collection do
           get :verify

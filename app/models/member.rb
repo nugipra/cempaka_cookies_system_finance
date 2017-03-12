@@ -49,6 +49,14 @@ class Member < ApplicationRecord
     CORE_MEMBER_IDS.include?(self.member_id)
   end
 
+  def web_dev?
+    WEB_DEV_MEMBER_ID == self.member_id
+  end
+
+  def web_dev_commision
+    Member::WEB_DEV_COMMISION[self.package.to_sym]
+  end
+
   def name_with_member_id
     fullname + " - " + member_id
   end
