@@ -51,9 +51,9 @@
   </tbody>
 </table>
 
-<%= link_to "Edit", edit_member_path(@member), class: "btn btn-warning" %>
-<%= link_to "Add Member", new_member_path(:upline_id => @member.id, from: member_path(@member)), class: "btn btn-warning" %>
-<%= link_to "Add Transaction", new_transaction_path(:member_id => @member.id), class: "btn btn-warning" %>
+<button class="btn btn-warning" onClick="location.href='<%= edit_member_path(@member, from: member_path(@member)) %>'; return false;">Edit</button>
+<button class="btn btn-warning" onClick="location.href='<%= new_member_path(:upline_id => @member.id, from: member_path(@member)) %>'; return false;">Add Member</button>
+<button class="btn btn-warning" onClick="location.href='<%= new_transaction_path(:member_id => @member.id) %>'; return false;">Add Transaction</button>
 
 <h3>Transactions</h3>
 <% if @member.transactions.count.zero? %>

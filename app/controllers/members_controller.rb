@@ -18,13 +18,18 @@ class MembersController < ApplicationController
 
   # GET /members/new
   def new
+    if params[:upline_id].blank?
+      redirect_to members_path
+      return
+    end
+
     @member = Member.new(upline_id: params[:upline_id])
-    @uplines = Member.order("fullname")
+    @uplines = Member.where(id: @member.upline_id)
   end
 
   # GET /members/1/edit
   def edit
-    @uplines = Member.where.not(id: @member.self_and_descendants.collect(&:id)).order("fullname")
+    @uplines = Member.where(id: @member.upline_id)
   end
 
   # POST /members

@@ -5,6 +5,7 @@ class Member < ApplicationRecord
   has_many :wallet_transactions
 
   validates_presence_of :member_id, :fullname
+  validates_presence_of :upline_id, unless: Proc.new{|m| m.member_id == COMPANY_MEMBER_ID}
   validates_uniqueness_of :member_id, if: Proc.new{|m| m.member_id.present?}
   validates_uniqueness_of :email, if: Proc.new{|m| m.email.present?}
   validate :should_not_update_member_id_for_core_member, on: :update

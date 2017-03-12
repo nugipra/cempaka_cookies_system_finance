@@ -39,7 +39,7 @@
 
   <div class="form-group">
     <%= f.label :upline_id %>
-    <%= f.collection_select :upline_id, @uplines, :id, :name_with_member_id, {include_blank: true}, {class: "form-control", disabled: !@member.new_record?} %>
+    <%= f.collection_select :upline_id, @uplines, :id, :name_with_member_id, {include_blank: false}, {class: "form-control"} %>
   </div>
 
   <button type="submit" class="btn btn-default">Save</button>
