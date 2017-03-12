@@ -103,7 +103,7 @@ class Member < ApplicationRecord
   end
 
   def generate_wallet_transactions_from_network_commisions
-    self.network_commisions.order("created_at DESC, id DESC").each do |nc|
+    self.network_commisions.each do |nc|
       nc.generate_wallet_transaction
     end
   end
