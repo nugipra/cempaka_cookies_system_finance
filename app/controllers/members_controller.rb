@@ -31,7 +31,6 @@ class MembersController < ApplicationController
   # POST /members.json
   def create
     @member = Member.new(member_params)
-    @member.upline_id = Member.admin.id
 
     respond_to do |format|
       if @member.save
