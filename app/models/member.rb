@@ -4,7 +4,7 @@ class Member < ApplicationRecord
   has_many :network_commisions, class_name: "NetworkCommision", foreign_key: "member_id"
   has_many :wallet_transactions
 
-  validates_presence_of :member_id, :fullname
+  validates_presence_of :member_id, :fullname, :package
   validates_presence_of :upline_id, unless: Proc.new{|m| m.member_id == COMPANY_MEMBER_ID}
   validates_uniqueness_of :member_id, if: Proc.new{|m| m.member_id.present?}
   validates_uniqueness_of :email, if: Proc.new{|m| m.email.present?}
@@ -13,6 +13,7 @@ class Member < ApplicationRecord
   before_create :set_depth
   #before_update :update_network_commisions, if: Proc.new{|m| m.upline_id_changed?}
   after_create :generate_network_commisions
+  after_create :generate_wallet_transaction_from_web_dev_commision
 
   acts_as_nested_set parent_column: "upline_id"
 
@@ -24,6 +25,8 @@ class Member < ApplicationRecord
   WEB_DEV_MEMBER_ID = "DC03170000003" # Nugi Nugraha
   ADMIN_MEMBER_ID   = "DC03170000004" # Siti Nurjanah
   CORE_MEMBER_IDS   = [COMPANY_MEMBER_ID, OWNER_MEMBER_ID, WEB_DEV_MEMBER_ID, ADMIN_MEMBER_ID]
+
+  WEB_DEV_COMMISION = {bronze: 2000, silver: 1375, retail: 1375}
 
   def self.company
     Member.where(member_id: COMPANY_MEMBER_ID).first
@@ -100,6 +103,20 @@ class Member < ApplicationRecord
 
       network_upline = network_upline.upline
       levels += 1
+    end
+  end
+
+  def generate_wallet_transaction_from_web_dev_commision
+    unless self.core_member?
+      WalletTransaction.create(
+        member_id: Member.web_dev.id,
+        amount: Member::WEB_DEV_COMMISION[self.package.to_sym],
+        remarks: "joined as new reseller (#{self.package} package)",
+        created_at: self.created_at,
+        transaction_type: "web development commision",
+        remarks_object_id: self.id,
+        remarks_object_type: "Member"
+      )
     end
   end
 

@@ -10,22 +10,23 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170310162045) do
+ActiveRecord::Schema.define(version: 20170312073014) do
 
   create_table "members", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string   "member_id"
     t.string   "fullname"
     t.string   "email"
     t.integer  "upline_id"
-    t.datetime "created_at",                               null: false
-    t.datetime "updated_at",                               null: false
-    t.integer  "lft",                                      null: false
-    t.integer  "rgt",                                      null: false
-    t.integer  "network_depth",                default: 0, null: false
-    t.integer  "children_count",               default: 0, null: false
+    t.datetime "created_at",                                      null: false
+    t.datetime "updated_at",                                      null: false
+    t.integer  "lft",                                             null: false
+    t.integer  "rgt",                                             null: false
+    t.integer  "network_depth",                default: 0,        null: false
+    t.integer  "children_count",               default: 0,        null: false
     t.text     "address",        limit: 65535
     t.string   "telephone"
     t.integer  "wallet_balance",               default: 0
+    t.string   "package",                      default: "silver"
   end
 
   create_table "network_commision_payments", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
