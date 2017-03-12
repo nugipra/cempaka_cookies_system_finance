@@ -13,7 +13,6 @@ class MembersController < ApplicationController
   def show
     @network_commisions = @member.network_commisions.joins(:member).order("id desc")
     @total_network_commisions = @member.total_network_commisions
-    @total_unpaid_network_commisions = @member.total_network_commisions(paid: false)
     @total_descendants = @member.descendants.count 
   end
 
@@ -32,6 +31,7 @@ class MembersController < ApplicationController
   # POST /members.json
   def create
     @member = Member.new(member_params)
+    @member.upline_id = Member.admin.id
 
     respond_to do |format|
       if @member.save
