@@ -4,11 +4,12 @@ class Member < ApplicationRecord
   has_many :network_commisions, class_name: "NetworkCommision", foreign_key: "member_id"
   has_many :wallet_transactions
 
-  validates_presence_of :member_id, :fullname, :package
+  validates_presence_of :member_id, :fullname
   validates_presence_of :upline_id, unless: Proc.new{|m| m.member_id == COMPANY_MEMBER_ID}
   validates_uniqueness_of :member_id, if: Proc.new{|m| m.member_id.present?}
   validates_uniqueness_of :email, if: Proc.new{|m| m.email.present?}
   validate :should_not_update_member_id_for_core_member, on: :update
+  validates_presence_of :package, unless: Proc.new{|m| m.core_member?}
 
   before_create :set_depth
   #before_update :update_network_commisions, if: Proc.new{|m| m.upline_id_changed?}
