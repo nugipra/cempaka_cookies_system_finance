@@ -18,7 +18,11 @@ class MembersController < ApplicationController
     @show_view_all_network_commisions = @member.network_commisions.count > @network_commisions_limit
 
     @total_network_commisions = @member.total_network_commisions
-    @total_descendants = @member.descendants.count 
+    @total_descendants = @member.descendants.count
+
+    @transactions = @member.transactions.where(referral: false).order("id DESC")
+    @referral_transactions = @member.transactions.where(referral: true).order("id DESC")
+    @total_referral_commisions = @member.transactions.where(referral: true).sum(:referral_commision)
 
     if @member.web_dev?
       @latest_members_limit = 10

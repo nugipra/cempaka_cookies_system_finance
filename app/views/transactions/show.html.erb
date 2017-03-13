@@ -25,6 +25,16 @@
       <td><%= @transaction.payment_type.titleize %></td>
     </tr>
     <tr>
+      <td>Referral</td>
+      <td><%= @transaction.referral ? "Yes" : "No" %></td>
+    </tr>
+    <% if @transaction.referral %>
+      <tr>
+        <td>Referral commision</td>
+        <td><%= number_with_delimiter(@transaction.referral_commision, delimiter: ",") %></tnd>
+      </tr>
+    <% end %>
+    <tr>
       <td>Note</td>
       <td><%= @transaction.note %></td>
     </tr>

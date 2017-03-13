@@ -59,7 +59,7 @@
 
     <button class="btn btn-warning" onClick="location.href='<%= edit_member_path(@member, from: member_path(@member)) %>'; return false;">Edit</button>
     <button class="btn btn-warning" onClick="location.href='<%= new_member_path(:upline_id => @member.id, from: member_path(@member)) %>'; return false;">Add Member</button>
-    <button class="btn btn-warning" onClick="location.href='<%= new_transaction_path(:member_id => @member.id) %>'; return false;">Add Transaction</button>
+    <button class="btn btn-warning" onClick="location.href='<%= new_transaction_path(:member_id => @member.id, from: member_path(@member)) %>'; return false;">Add Transaction</button>
 
   </div>
 </div>
@@ -69,12 +69,25 @@
     <h3 class="panel-title">Transactions</h3>
   </div>
   <div class="panel-body">
-    <% if @member.transactions.count.zero? %>
+    <% if @transactions.count.zero? %>
       There is no transactions for this member <br/>
     <% else %>
-      <%= render partial: "/transactions/list", locals: {transactions: @member.transactions, show_seller: false, show_actions: false} %>
+      <%= render partial: "/transactions/list", locals: {transactions: @transactions, show_seller: false, show_actions: false} %>
     <% end %>
-    Total reseller point : <b><%= number_with_delimiter @member.reseller_point, delimiter: "," %></b>
+  </div>
+</div>
+
+<div class="panel panel-default">
+  <div class="panel-heading">
+    <h3 class="panel-title">Referral Transactions</h3>
+  </div>
+  <div class="panel-body">
+    <% if @referral_transactions.count.zero? %>
+      There is no referral transactions for this member <br/>
+    <% else %>
+      <%= render partial: "/transactions/list", locals: {transactions: @referral_transactions, show_seller: false, show_actions: false, show_referral: true} %>
+    <% end %>
+    Total referral commisions : <b><%= number_with_delimiter @total_referral_commisions, delimiter: "," %></b>
   </div>
 </div>
 

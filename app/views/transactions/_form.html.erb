@@ -13,7 +13,7 @@
 
   <div class="form-group">
     <%= f.label :member_id, "Seller" %>
-    <%= f.collection_select :member_id, Member.order("fullname"), :id, :name_with_member_id, {}, {class: "form-control"} %>
+    <%= f.collection_select :member_id, Member.where(id: f.object.member_id), :id, :name_with_member_id, {}, {class: "form-control"} %>
   </div>
 
   <div class="form-group">
@@ -35,6 +35,10 @@
     <%= f.label :payment_type, "Payment type" %>
     <%= f.select :payment_type, options_for_select([["Cash", "cash"], ["Transfer", "transfer"], ["Wallet", "wallet"]], f.object.payment_type), {}, class: "form-control" %>
   </div>
+  <div class="form-group">
+    <%= f.label :referral, "Referral" %>
+    <%= f.select :referral, options_for_select([["Yes", true], ["No", false]], f.object.referral), {}, class: "form-control" %>
+  </div>
 
   <div class="form-group">
     <%= f.label :note %>
@@ -42,4 +46,13 @@
   </div>
 
   <button type="submit" class="btn btn-default">Submit</button>
+
+  <%
+    if params[:from].present?
+      back_path = params[:from]
+    else
+      back_path = transactions_path
+    end
+  %>
+  <button class="btn btn-default" onClick="location.href='<%= back_path %>'; return false;">Cancel</button>
 <% end %>

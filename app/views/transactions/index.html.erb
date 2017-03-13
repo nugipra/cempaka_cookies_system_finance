@@ -5,6 +5,3 @@
 <% else %>
   <%= render partial: "list", locals: {transactions: @transactions} %>
 <% end %>
-<br>
-
-<button class="btn btn-default" onClick="location.href='<%= new_transaction_path  %>'; return false;">New Transaction</button>

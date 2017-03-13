@@ -15,6 +15,11 @@ class TransactionsController < ApplicationController
 
   # GET /transactions/new
   def new
+    if params[:member_id].blank?
+      redirect_to transactions_path
+      return
+    end
+
     @transaction = Transaction.new(member_id: params[:member_id])
   end
 
@@ -70,6 +75,8 @@ class TransactionsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def transaction_params
-      params.require(:transaction).permit(:member_id, :product_name, :price, :quantity, :note, :payment_type)
+      params.require(:transaction).permit(
+        :member_id, :product_name, :price, :quantity, :note, :payment_type, :referral
+      )
     end
 end
