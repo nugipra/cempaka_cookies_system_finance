@@ -1,6 +1,6 @@
 <h4>Please re-enter your password to access WALLET section.</h4>
 
-<%= form_for(current_user, url: do_verify_wallet_transactions_path(@member), class: "form-group") do |f| %>
+<%= form_for(current_member, url: do_verify_wallet_transactions_path(@member), class: "form-group") do |f| %>
 
   <div class="form-group">
     <%= f.label :email %>

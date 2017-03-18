@@ -23,33 +23,42 @@
               <%= link_to "Cempaka Cookies Financial Management System", "/", class: "navbar-brand" %>
             </div>
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-              <% if user_signed_in? %>
+              <% if member_signed_in? %>
                 <ul class="nav navbar-nav">
                   <li class="<%= params[:controller] == "home" && params[:action] == "index" ? "active" : "" %>">
                     <%= link_to "Dashboard", "/" %>
                   </li>
-                  <li class="<%= params[:controller] == "members" ? "active" : "" %>">
-                    <%= link_to "Members", members_path %>
-                  </li>
-                  <li class="<%= params[:controller] == "transactions" ? "active" : "" %>">
-                    <%= link_to "Transactions", transactions_path %>
-                  </li>
-                  <li class="<%= params[:controller] == "search" ? "active" : "" %>">
-                    <%= link_to "Search", search_path %>
-                  </li>
+                  <% if current_member.the_admin? %>
+                    <li class="<%= params[:controller] == "members" ? "active" : "" %>">
+                      <%= link_to "Members", members_path %>
+                    </li>
+                    <li class="<%= params[:controller] == "transactions" ? "active" : "" %>">
+                      <%= link_to "Transactions", transactions_path %>
+                    </li>
+                    <li class="<%= params[:controller] == "search" ? "active" : "" %>">
+                      <%= link_to "Search", search_path %>
+                    </li>
+                  <% else %>
+                    <li class="<%= params[:controller] == "members" && params[:action] == "network_commisions" ? "active" : "" %>">
+                      <%= link_to "Network Commisions", network_commisions_member_path(current_member) %>
+                    </li>
+                    <li class="<%= params[:controller] == "members" && params[:action] == "wallet_history" ? "active" : "" %>">
+                      <%= link_to "Wallet", wallet_history_member_path %>
+                    </li>
+                  <% end %>
                 </ul>
               <% end %>
 
               <ul class="nav navbar-nav navbar-right">
-                <% if user_signed_in? %>
+                <% if member_signed_in? %>
                   <li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><%= current_user.email %> <span class="caret"></span></a>
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><%= current_member.email %> <span class="caret"></span></a>
                     <ul class="dropdown-menu">
                       <% if false %>
                         <li><%= link_to "Network Commision Payments", network_commision_payments_path %></li>
                       <% end %>
-                      <li><%= link_to "Change password", edit_user_path %></li>
-                      <li><%= link_to "Log Out", destroy_user_session_path, method: "delete" %></li>
+                      <li><%= link_to "Change password", change_password_member_path %></li>
+                      <li><%= link_to "Log Out", logout_path, method: "delete" %></li>
                     </ul>
                   </li>
                 <% end %>

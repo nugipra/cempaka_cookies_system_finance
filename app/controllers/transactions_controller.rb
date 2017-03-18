@@ -1,5 +1,6 @@
 class TransactionsController < ApplicationController
-  before_action :authenticate_user!
+  before_action :authenticate_member!
+  before_action :admin_required
   before_action :set_transaction, only: [:show, :edit, :update, :destroy]
 
   # GET /transactions

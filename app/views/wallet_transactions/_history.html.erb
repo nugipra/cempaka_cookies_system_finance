@@ -1,0 +1,55 @@
+<div class="panel panel-default">
+  <div class="panel-heading">
+    <h3 class="panel-title">History</h3>
+  </div>
+  <div class="panel-body">
+    <% if @wallet_transactions.size.zero? %>
+      No history for this wallet
+    <% else %>
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th class="col-sm-2">Time</th>
+            <th class="col-sm-2">Amount</th>
+            <th class="col-sm-2">Balance</th>
+            <th class="col-sm-6">Remarks</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <% @wallet_transactions.each do |wallet_transaction| %>
+            <tr>
+              <td><%= wallet_transaction.created_at.in_time_zone("Jakarta").strftime("%Y-%m-%d %H:%M") %></td>
+              <td>
+                <% if wallet_transaction.amount >= 0 %>
+                  <span class="text-primary">
+                    <strong>+<%= number_with_delimiter wallet_transaction.amount, delimiter: "," %></strong>
+                  </span>
+                <% else %>
+                  <span class="text-danger">
+                    <strong><%= number_with_delimiter wallet_transaction.amount, delimiter: "," %></strong>
+                  </span>
+                <% end %>
+              </td>
+              <td><strong><%= number_with_delimiter wallet_transaction.balance, delimiter: "," %></strong></td>
+              <td>
+                <% if wallet_transaction.remarks_object_type == "Member" %>
+                  <%= wallet_transaction.transaction_type.titleize %> :
+                  <%= link_to wallet_transaction.remarks_object.fullname, "/members/#{wallet_transaction.remarks_object_id}" %>
+                  <%= wallet_transaction.remarks %>
+               <% elsif wallet_transaction.remarks_object_type == "Transaction" %>
+                  <%= wallet_transaction.transaction_type.titleize %> :
+                  <%= link_to wallet_transaction.remarks, transaction_path(wallet_transaction.remarks_object, from: wallet_transactions_path(@member)) %>
+                <% else %>
+                  <%= wallet_transaction.transaction_type.titleize %> : <%= wallet_transaction.remarks %>
+                <% end %>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+
+      <%= will_paginate @wallet_transactions, class: 'pagination', :previous_label => 'Newer history', :next_label => 'Older history' %>
+    <% end %>
+  </div>
+</div>

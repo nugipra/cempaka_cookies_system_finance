@@ -1,4 +1,6 @@
 class Member < ApplicationRecord
+  devise :database_authenticatable, :rememberable, :trackable, :validatable
+
   belongs_to :upline, class_name: "Member", required: false
   has_many :transactions
   has_many :network_commisions, class_name: "NetworkCommision", foreign_key: "member_id"
@@ -15,6 +17,7 @@ class Member < ApplicationRecord
   #before_update :update_network_commisions, if: Proc.new{|m| m.upline_id_changed?}
   after_create :generate_network_commisions
   after_create :generate_wallet_transaction_from_web_dev_commision
+  before_save :set_initial_password, if: :password_blank?
 
   acts_as_nested_set parent_column: "upline_id"
 
@@ -47,6 +50,10 @@ class Member < ApplicationRecord
 
   def core_member?
     CORE_MEMBER_IDS.include?(self.member_id)
+  end
+
+  def company?
+    COMPANY_MEMBER_ID == self.member_id
   end
 
   def web_dev?
@@ -94,14 +101,10 @@ class Member < ApplicationRecord
 
     levels = 1
     while levels <= 10 && network_upline.present?
-      if network_upline == Member.company && levels < 10
-        company_commision = 0
-        (levels..10).to_a.each  do |l|
-          company_commision += NETWORK_LEVEL_FEE[l-1]
-        end
+      if network_upline == Member.company
         network_upline.network_commisions.create(
           descendant_id: self.id,
-          commision: company_commision
+          commision: (levels..10).to_a.collect{|l| NETWORK_LEVEL_FEE[l-1]}.sum
         )
       else
         network_upline.network_commisions.create(
@@ -139,6 +142,23 @@ class Member < ApplicationRecord
     raise "Forbidden method !"
   end
 
+  def password_blank?
+    self.encrypted_password.blank?
+  end
+
+  def password_required?
+    # Password is required if it is being set, but not for new records
+    if !persisted?
+      false
+    else
+      !password.nil? || !password_confirmation.nil?
+    end
+  end
+
+  def email_required?
+    false
+  end
+
   private
   def should_not_update_member_id_for_core_member
     if self.member_id_changed? && CORE_MEMBER_IDS.include?(self.member_id_was)
@@ -162,6 +182,13 @@ class Member < ApplicationRecord
     self.self_and_descendants.each do |member|
       member.update_depth
       member.generate_network_commisions
+    end
+  end
+
+  def set_initial_password
+    if self.email_changed? && self.email.present?
+      self.password = self.member_id
+      self.password_confirmation = self.member_id
     end
   end
 

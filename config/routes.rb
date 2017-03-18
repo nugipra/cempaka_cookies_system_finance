@@ -26,21 +26,25 @@ Rails.application.routes.draw do
   get 'search/results', to: 'search#results'
   get 'network_commisions/unpaid'
 
-  devise_for :users
+  devise_for :members
 
-  devise_scope :user do
-    authenticated :user do
+  devise_scope :member do
+    authenticated :member do
       root 'home#index', as: :authenticated_root
     end
 
     unauthenticated do
       root 'devise/sessions#new', as: :unauthenticated_root
     end
+
+    delete "logout", to: "devise/sessions#destroy", as: :logout
   end
 
-  resource :user, only: [:edit] do
+  resource :member, only: [:edit] do
     collection do
-      patch 'update_password'
+      get "change_password"
+      patch "update_password"
+      get "wallet_history"
     end
   end
 

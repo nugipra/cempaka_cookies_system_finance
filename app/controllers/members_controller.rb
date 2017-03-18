@@ -1,5 +1,8 @@
 class MembersController < ApplicationController
-  before_action :authenticate_user!
+  before_action :authenticate_member!
+  before_action :admin_required, except: [
+    :change_password, :update_password, :wallet_history, :network_commisions
+  ]
   before_action :set_member, only: [
     :show, :edit, :update, :destroy, :network_commisions, :web_development_commisions
   ]
@@ -91,6 +94,11 @@ class MembersController < ApplicationController
   end
 
   def network_commisions
+    if !current_member.the_admin? && current_member != @member
+      redirect_to "/", notice: "Access denied"
+      return
+    end
+
     @network_commisions = @member.network_commisions.joins(:member).order("id desc").paginate(:page => params[:page], :per_page => 30)
     @total_network_commisions = @member.total_network_commisions
   end
@@ -105,6 +113,27 @@ class MembersController < ApplicationController
     @total_web_dev_commisions = WalletTransaction.where(member_id: @member.id, transaction_type: "web development commision").sum(:amount)
   end
 
+  def change_password
+    @member = current_member
+  end
+
+  def update_password
+    @member = Member.find(current_member.id)
+    if @member.update_with_password(member_password_params)
+      # Sign in the member by passing validation in case their password changed
+      bypass_sign_in(@member)
+      notice = params[:member][:password].blank? ? "Password is not changed because you didn't enter new password" : "Password has succesfully updated"
+      redirect_to change_password_member_path, notice: notice
+    else
+      render "change_password"
+    end
+  end
+
+  def wallet_history
+    @member = current_member
+    @wallet_transactions = @member.wallet_transactions.includes(:remarks_object).order("created_at DESC, id DESC").paginate(:page => params[:page], :per_page => 15)
+  end
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_member
@@ -114,5 +143,9 @@ class MembersController < ApplicationController
     # Never trust parameters from the scary internet, only allow the white list through.
     def member_params
       params.require(:member).permit(:member_id, :fullname, :email, :upline_id, :telephone, :address, :package)
+    end
+
+    def member_password_params
+      params.require(:member).permit(:password, :password_confirmation, :current_password)
     end
 end

@@ -8,8 +8,10 @@
     <table class="table table-borderless">
       <tbody>
         <tr>
-          <td class="col-sm-2">Owner</td>
-          <td class="col-sm-4"><%= link_to @member.fullname, @member %></td>
+          <td class="col-sm-1">Owner</td>
+          <td class="col-sm-4">
+            <%= current_member.the_admin? ? link_to(@member.fullname, @member) : @member.fullname %>
+          </td>
         </tr>
         <tr>
           <td>Total network commisions</td>
@@ -30,7 +32,9 @@
     <table class="table table-striped">
       <thead>
         <tr>
-          <th>Member ID</th>
+          <% if current_member.the_admin? %>
+            <th>Member ID</th>
+          <% end %>
           <th>Fullname</th>
           <th>Upline</th>
           <th>Depth</th>
@@ -42,9 +46,15 @@
         <% @network_commisions.each do |commision| %>
           <% commision_from = commision.descendant %>
           <tr>
-            <td><%= link_to commision_from.member_id, commision_from %></td>
-            <td><%= link_to commision_from.fullname, commision_from %></td>
-            <td><%= link_to commision_from.upline.fullname, commision_from.upline if commision_from.upline %></td>
+            <% if current_member.the_admin? %>
+              <td><%= link_to commision_from.member_id, commision_from %></td>
+            <% end %>
+            <td><%= current_member.the_admin? ? link_to(commision_from.fullname, commision_from) : commision_from.fullname %></td>
+            <td>
+              <% if commision_from.upline %>
+                <%= current_member.the_admin? ? link_to(commision_from.upline.fullname, commision_from.upline) : commision_from.upline.fullname %>
+              <% end %>
+            </td>
             <td><%= commision_from.network_depth - @member.network_depth  %></td>
             <td>
               <%= number_with_delimiter commision.commision, delimiter: "," %>
@@ -57,3 +67,7 @@
     <%= will_paginate @network_commisions, class: 'pagination' %>
   </div>
 </div>
+
+<% unless current_member.the_admin %>
+  <button class='btn btn-default' onClick="location.href='/'; return false;">Back</button>
+<% end %>

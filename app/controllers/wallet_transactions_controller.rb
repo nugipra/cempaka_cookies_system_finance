@@ -1,5 +1,6 @@
 class WalletTransactionsController < ApplicationController
-  before_action :authenticate_user!
+  before_action :authenticate_member!
+  before_action :admin_required
   before_action :set_member
   before_action :authenticate_wallet_session, except: [:verify, :do_verify]
 
@@ -47,7 +48,7 @@ class WalletTransactionsController < ApplicationController
   end
 
   def do_verify
-    if current_user.valid_password?(params[:user][:password])
+    if current_member.valid_password?(params[:member][:password])
       session[:accessing_wallet_time] = Time.now.to_i
       redirect_to wallet_transactions_path(@member)
     else

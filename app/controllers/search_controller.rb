@@ -1,5 +1,6 @@
 class SearchController < ApplicationController
-  before_action :authenticate_user!
+  before_action :authenticate_member!
+  before_action :admin_required
 
   def index
     @q = Member.ransack(params[:q])

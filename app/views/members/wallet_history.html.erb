@@ -1,0 +1,22 @@
+<h1>Wallet</h1>
+
+<div class="panel panel-default">
+  <div class="panel-heading">
+    <h3 class="panel-title">Info</h3>
+  </div>
+  <div class="panel-body">
+    <div class="row">
+      <div class="col-md-2">Owner</div>
+      <div class="col-md-10"><%= @member.fullname %></div>
+    </div>
+    <br/>
+    <div class="row">
+      <div class="col-md-2">Wallet Balance</div>
+      <div class="col-md-10"><strong><%= number_with_delimiter @member.wallet_balance, delimiter: "," %></strong></div>
+    </div>
+  </div>
+</div>
+
+<%= render partial: "/wallet_transactions/history" %>
+
+<button class='btn btn-default' onClick="location.href='/'">Back</button>
