@@ -10,7 +10,7 @@
         <tr>
           <td class="col-sm-1">Member ID</td>
           <td class="col-sm-4"><%= @member.member_id %></td>
-          <td class="col-sm-2">Total downlines</td>
+          <td class="col-sm-2">Total <%= current_member.the_admin? ? "downlines" : "invited members" %></td>
           <td class="col-sm-4"><%= link_to @member.children.count %></td>
         </tr>
         <tr>
