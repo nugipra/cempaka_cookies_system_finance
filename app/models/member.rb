@@ -17,7 +17,7 @@ class Member < ApplicationRecord
   #before_update :update_network_commisions, if: Proc.new{|m| m.upline_id_changed?}
   after_create :generate_network_commisions
   after_create :generate_wallet_transaction_from_web_dev_commision
-  before_save :set_initial_password, if: :password_blank?
+  before_save :set_initial_password, if: :need_to_set_initial_password?
 
   acts_as_nested_set parent_column: "upline_id"
 
@@ -159,7 +159,18 @@ class Member < ApplicationRecord
     false
   end
 
+  def need_to_set_initial_password?
+    if self.password_blank?
+      return self.email_changed? && self.email.present?
+    elsif self.member_id_changed?
+      return self.valid_password?(self.member_id_was)
+    else
+      return false
+    end
+  end
+
   private
+
   def should_not_update_member_id_for_core_member
     if self.member_id_changed? && CORE_MEMBER_IDS.include?(self.member_id_was)
       errors.add(:member_id, "can't be changed")
@@ -186,10 +197,8 @@ class Member < ApplicationRecord
   end
 
   def set_initial_password
-    if self.email_changed? && self.email.present?
-      self.password = self.member_id
-      self.password_confirmation = self.member_id
-    end
+    self.password = self.member_id
+    self.password_confirmation = self.member_id
   end
 
 end
