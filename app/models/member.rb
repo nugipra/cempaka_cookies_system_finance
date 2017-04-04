@@ -32,6 +32,8 @@ class Member < ApplicationRecord
 
   WEB_DEV_COMMISION = {bronze: 2000, silver: 1375, retail: 1375}
 
+  after_destroy :remove_commisions_from_destroyed_user
+
   def self.company
     Member.where(member_id: COMPANY_MEMBER_ID).first
   end
@@ -169,7 +171,45 @@ class Member < ApplicationRecord
     end
   end
 
+  def has_children?
+    self.rgt - self.lft != 1
+  end
+
   private
+
+  def remove_commisions_from_destroyed_user
+    # remove web dev commisions
+    web_dev = Member.web_dev
+    wt = WalletTransaction.where(
+      member_id: web_dev .id,
+      transaction_type: "web development commision",
+      remarks_object_id: self.id,
+      remarks_object_type: "Member"
+    ).first.destroy
+
+    last_transaction = web_dev.wallet_transactions.where("created_at < ?", wt.created_at).order("created_at desc, id desc").first
+    last_wallet = last_transaction ? last_transaction.balance : 0
+    web_dev.wallet_transactions.where("created_at >= ?", wt.created_at).order("created_at asc, id asc").each do |m|
+      m.balance = m.amount + last_wallet
+      m.save
+      last_wallet = m.balance
+    end
+    web_dev.update_column :wallet_balance, last_wallet
+
+    # remove network commisions
+    removed_commisions = NetworkCommision.where(descendant_id: self.id).destroy_all
+    removed_commisions.each do |rc|
+      member = rc.member
+      last_transaction = member.wallet_transactions.where("created_at < ?", rc.created_at).order("created_at desc, id desc").first
+      last_wallet = last_transaction ? last_transaction.balance : 0
+      member.wallet_transactions.where("created_at >= ?", rc.created_at).order("created_at asc, id asc").each do |m|
+        m.balance = m.amount + last_wallet
+        m.save
+        last_wallet = m.balance
+      end
+      member.update_column :wallet_balance, last_wallet
+    end
+  end
 
   def should_not_update_member_id_for_core_member
     if self.member_id_changed? && CORE_MEMBER_IDS.include?(self.member_id_was)
