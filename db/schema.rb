@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170317234206) do
+ActiveRecord::Schema.define(version: 20170413055157) do
 
   create_table "members", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string   "member_id"
@@ -35,6 +35,8 @@ ActiveRecord::Schema.define(version: 20170317234206) do
     t.string   "current_sign_in_ip"
     t.string   "last_sign_in_ip"
     t.boolean  "the_admin",                         default: false
+    t.integer  "region_id"
+    t.boolean  "the_region_admin",                  default: false
   end
 
   create_table "network_commision_payments", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
@@ -57,6 +59,12 @@ ActiveRecord::Schema.define(version: 20170317234206) do
     t.integer  "network_commision_payment_id"
     t.index ["descendant_id"], name: "index_network_commisions_on_descendant_id", using: :btree
     t.index ["member_id"], name: "index_network_commisions_on_member_id", using: :btree
+  end
+
+  create_table "regions", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.string   "name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "transactions", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|

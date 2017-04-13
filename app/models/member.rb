@@ -5,6 +5,7 @@ class Member < ApplicationRecord
   has_many :transactions
   has_many :network_commisions, class_name: "NetworkCommision", foreign_key: "member_id"
   has_many :wallet_transactions
+  belongs_to :region
 
   validates_presence_of :member_id, :fullname
   validates_presence_of :upline_id, unless: Proc.new{|m| m.member_id == COMPANY_MEMBER_ID}
