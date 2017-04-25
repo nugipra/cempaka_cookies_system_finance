@@ -25,6 +25,13 @@
     </div>
   </div>
 
+  <% if current_member.the_admin? %>
+    <div class="form-group">
+      <%= f.label "Region" %>
+      <%= f.select :region_id_eq, Region.order("name").all.collect{|r| [r.name, r.id]}, {include_blank: true}, class: "form-control" %>
+    </div>
+  <% end %>
+
   <%= f.submit "Search", class: "btn btn-default" %>
   <%= link_to "Clear", search_path, class: "btn btn-default" %>
 <% end %>

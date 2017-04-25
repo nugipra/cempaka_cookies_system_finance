@@ -25,7 +25,11 @@
           <td>Invited by</td>
           <td>
             <% if @member.upline %>
-              <%= current_member.the_admin? ? link_to(@member.upline.fullname, @member.upline) : @member.upline.fullname %>
+              <% if current_member.the_admin? || (current_member.the_region_admin? && current_member.region_id == @member.upline.region_id) %>
+                <%= link_to(@member.upline.fullname, @member.upline) %>
+              <% else %>
+                <%= @member.upline.fullname %>
+              <% end %>
             <% end %>
           </td>
         </tr>
@@ -40,31 +44,59 @@
         <tr>
           <td>Package</td>
           <td><%= @member.package.titleize %></td>
-          <% unless @total_descendants.zero? %>
-            <td>Total network commisions</td>
-            <td>
+          <td>Total network commisions</td>
+          <td>
+            <% unless @total_descendants.zero? %>
               <%= link_to number_with_delimiter(@total_network_commisions, delimiter: ","), network_commisions_member_path(@member) %>
-            </td>
-          <% else %>
-            <td colspan=2>&nbsp;</td>
-          <% end %>
+            <% else %>
+              <%= @total_network_commisions %>
+            <% end %>
+          </td>
         </tr>
-        <% if @member.web_dev? %>
-          <tr>
-            <td colspan=2>&nbsp;</td>
+        <tr>
+          <td>Region</td>
+          <td><%= @member.region.name %> <%= content_tag(:span, "REGION ADMIN", class: "label label-success") if @member.the_region_admin? %></td>
+          <% if @member.web_dev? %>
             <td>Total web development Commisions</td>
             <td>
               <%= number_with_delimiter @total_web_dev_commisions, delimiter: "," %>
             </td>
-          </tr>
-        <% end %>
+          <% elsif @member.the_region_admin? %>
+            <td>Member Registration Quota</td>
+            <td>
+              <%= number_with_delimiter @member.member_registration_quota, delimiter: "," %>
+            </td>
+          <% end %>
+        </tr>
       </tbody>
     </table>
 
-    <% if current_member.the_admin? %>
-      <button class="btn btn-warning" onClick="location.href='<%= edit_member_path(@member, from: member_path(@member)) %>'; return false;">Edit</button>
-      <button class="btn btn-warning" onClick="location.href='<%= new_member_path(:upline_id => @member.id, from: member_path(@member)) %>'; return false;">Add Member</button>
-      <button class="btn btn-warning" onClick="location.href='<%= new_transaction_path(:member_id => @member.id, from: member_path(@member)) %>'; return false;">Add Transaction</button>
+    <% if current_member.the_admin? && current_member.region_id == @member.region_id %>
+      <div class="btn-group">
+        <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          Add <span class="caret"></span>
+        </button>
+        <ul class="dropdown-menu">
+          <li><%= link_to "Member", new_member_path(:upline_id => @member.id, from: member_path(@member)) %></li>
+          <li><%= link_to "Transaction", new_transaction_path(:member_id => @member.id, from: member_path(@member)) %></li>
+          <li role="separator" class="divider"></li>
+          <li><%= link_to "Region Admin", new_member_path(:upline_id => @member.id, region: "new", from: member_path(@member)) %></li>
+        </ul>
+      </div>
+      <button class="btn btn-primary" onClick="location.href='<%= edit_member_path(@member, from: member_path(@member)) %>'; return false;">Edit</button>
+    <% elsif current_member.the_region_admin? && current_member.region_id == @member.region_id %>
+      <% if current_member.member_registration_quota.zero? %>
+        <button class="btn btn-primary" onClick="swal('Can\'t add new member', 'There is no registration quota left\nPlease make deposit to add quota', 'warning'); return false;">Add Member</button>
+      <% else %>
+        <button class="btn btn-primary" onClick="location.href='<%= new_member_path(:upline_id => @member.id, from: member_path(@member)) %>'; return false;">Add Member</button>
+      <% end %>
+
+      <button class="btn btn-primary" onClick="location.href='<%= edit_member_path(@member, from: member_path(@member)) %>'; return false;">Edit</button>
+    <% elsif current_member.the_admin? %>
+      <button class="btn btn-primary" onClick="location.href='<%= new_transaction_path(:member_id => @member.id, from: member_path(@member)) %>'; return false;">Add Transaction</button>
+      <% if @member.the_region_admin? %>
+        <button class="btn btn-primary" onClick="location.href='<%= add_registration_quota_member_path(@member.id) %>'; return false;">Add Member Registration Quota</button>
+      <% end %>
     <% end %>
   </div>
 </div>
@@ -121,11 +153,19 @@
             <tr>
               <td><%= link_to commision_from.member_id, commision_from %></td>
               <td>
-                <%= current_member.the_admin? ? link_to(commision_from.fullname, commision_from) : commision_from.fullname %>
+                  <% if current_member.the_admin? || (current_member.the_region_admin? && current_member.region_id == commision_from.region_id) %>
+                    <%= link_to(commision_from.fullname, commision_from) %>
+                  <% else %>
+                    <%= commision_from.fullname %>
+                  <% end %>
               </td>
               <td>
                 <% if commision_from.upline %>
-                  <%= current_member.the_admin? ? link_to(commision_from.upline.fullname, commision_from.upline) : commision_from.upline.fullname %>
+                  <% if current_member.the_admin? || (current_member.the_region_admin? && current_member.region_id == commision_from.upline.region_id) %>
+                    <%= link_to(commision_from.upline.fullname, commision_from.upline) %>
+                  <% else %>
+                    <%= commision_from.upline.fullname %>
+                  <% end %>
                 <% end %>
               </td>
               <td><%= commision_from.network_depth - @member.network_depth  %></td>

@@ -1,4 +1,6 @@
 <%= form_for(member, class: "form-group") do |f| %>
+  <%= hidden_field_tag :region, params[:region] %>
+  <%= f.hidden_field :set_region_admin if member.new_record? %>
 
   <% if member.errors.any? %>
     <div id="error_explanation">
@@ -12,9 +14,16 @@
     </div>
   <% end %>
 
+  <% if member.set_region_admin %>
+    <div class="form-group">
+      <%= f.label :region_name, "Region Name" %>
+      <%= f.text_field :region_name, autofocus: !(@member.new_record? && params[:region] == "new"), class: "form-control", disabled: !f.object.new_record? && f.object.core_member? %>
+    </div>
+  <% end %>
+
   <div class="form-group">
     <%= f.label :member_id, "Member ID" %>
-    <%= f.text_field :member_id, autofocus: true, class: "form-control", disabled: !f.object.new_record? && f.object.core_member? %>
+    <%= f.text_field :member_id, autofocus: !(@member.new_record? && params[:region] == "new"), class: "form-control", disabled: !f.object.new_record? && f.object.core_member? %>
   </div>
 
   <div class="form-group">
@@ -37,13 +46,20 @@
     <%= f.email_field :email, class: "form-control" %>
   </div>
 
+  <% unless member.new_record? %>
+    <div class="form-group">
+      <%= f.label :region_name, "Region Name" %>
+      <%= text_field_tag :region_name, member.region.name, class: "form-control", disabled: true %>
+    </div>
+  <% end %>
+
   <div class="form-group">
     <%= f.label :package %>
     <%= f.select :package, options_for_select([["Bronze", "bronze"], ["Silver", "silver"], ["Retail", "retail"]], @member.package), {}, {class: "form-control", disabled: !@member.new_record?} %>
   </div>
 
   <div class="form-group">
-    <%= f.label :upline_id %>
+    <%= f.label :upline_id, "Invited by" %>
     <%= f.collection_select :upline_id, @uplines, :id, :name_with_member_id, {include_blank: false}, {class: "form-control", disabled: !@member.new_record?} %>
   </div>
 

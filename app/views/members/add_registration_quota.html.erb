@@ -1,0 +1,46 @@
+<h1>Add registration quota</h1>
+
+<%= form_tag(process_add_registration_quota_member_path(@member), method: :post, class: "form-group") do %>
+
+  <div class="form-group">
+    <%= label_tag :member_id, "Admin" %>
+    <%= text_field_tag :member_id, @member.fullname, class: "form-control", disabled: true  %>
+  </div>
+
+  <div class="form-group">
+    <%= label_tag :region_id, "Region" %>
+    <%= text_field_tag :region_id, @member.region.name, class: "form-control", disabled: true  %>
+  </div>
+
+  <div class="form-group">
+    <%= label_tag :member_registration_quota, "Current Member Registration Quota" %>
+    <%= number_field_tag :member_registration_quota, @member.member_registration_quota, class: "form-control", disabled: true  %>
+  </div>
+
+  <div class="form-group">
+    <%= label_tag :total_quota_addition, "Total Quota Addition" %>
+    <%= number_field_tag :total_quota_addition, params[:total_quota_addition], class: "form-control", min: 1, required: true %>
+    <span id="total_quota_addition_help_block" class="help-block"></span>
+  </div>
+
+  <button type="submit" class="btn btn-default">Save</button>
+  <button class="btn btn-default" onClick="location.href='<%= member_path(@member) %>'; return false;">Cancel</button>
+<% end %>
+
+<script>
+  $(function() {
+    $("#total_quota_addition").on("keydown", function() {
+	   setTimeout(function() {
+        $helpBlock = $("#total_quota_addition_help_block");
+        if ($("#total_quota_addition").val() == "") {
+          $helpBlock.text("");
+        } else {
+          var newQuota = parseInt($("#total_quota_addition").val()) + parseInt($("#member_registration_quota").val());
+          var text = "This region admin will have " + newQuota + " quota";
+
+          $helpBlock.text(text);
+        }
+	   }, 10);
+    });
+  });
+</script>

@@ -5,24 +5,33 @@ class Member < ApplicationRecord
   has_many :transactions
   has_many :network_commisions, class_name: "NetworkCommision", foreign_key: "member_id"
   has_many :wallet_transactions
-  belongs_to :region
+  belongs_to :region, required: false
 
   validates_presence_of :member_id, :fullname
   validates_presence_of :upline_id, unless: Proc.new{|m| m.member_id == COMPANY_MEMBER_ID}
   validates_uniqueness_of :member_id, if: Proc.new{|m| m.member_id.present?}
   validates_uniqueness_of :email, if: Proc.new{|m| m.email.present?}
   validate :should_not_update_member_id_for_core_member, on: :update
+  validate :should_validate_registration_quota, on: :create
+  validate :should_validate_region, on: :create, if:  Proc.new{|m| m.set_region_admin == "1"}
   validates_presence_of :package, unless: Proc.new{|m| m.core_member?}
+  validates_presence_of :email, if:  Proc.new{|m| m.set_region_admin == "1"}
 
   before_create :set_depth
+  before_create :create_region_for_admin, if:  Proc.new{|m| m.set_region_admin == "1"}
   #before_update :update_network_commisions, if: Proc.new{|m| m.upline_id_changed?}
   after_create :generate_network_commisions
   after_create :generate_wallet_transaction_from_web_dev_commision
+  after_create :decrease_registration_quota
   before_save :set_initial_password, if: :need_to_set_initial_password?
 
   acts_as_nested_set parent_column: "upline_id"
 
-  NETWORK_LEVEL_FEE = [5000, 1800, 1800, 1800, 1000, 1000, 1000, 300, 300, 300]
+  attr_accessor :set_region_admin
+  attr_accessor :region_name
+
+  NETWORK_LEVEL_FEE =        [5000, 1800, 1800, 1800, 1000, 1000, 1000, 300, 300, 300]
+  NETWORK_LEVEL_FEE_REGION = [7000, 2500, 2500, 2500, 1200, 1200, 1200, 600, 600, 600]
   NETWORK_LEVEL_LIMIT = 30280000
 
   COMPANY_MEMBER_ID = "DC03170000001" # dDanus Cempaka Cookies
@@ -90,7 +99,8 @@ class Member < ApplicationRecord
 
   def get_network_fee_from_descendant(descendant)
     level_difference = descendant.network_depth - self.network_depth
-    return NETWORK_LEVEL_FEE[level_difference - 1]
+    fees = self.the_region_admin? ? NETWORK_LEVEL_FEE_REGION : NETWORK_LEVEL_FEE
+    return fees[level_difference - 1]
   end
 
   def total_network_commisions(options = {})
@@ -178,6 +188,12 @@ class Member < ApplicationRecord
 
   private
 
+  def create_region_for_admin
+    region = Region.create(:name => self.region_name.strip)
+    self.region_id = region.id
+    self.the_region_admin = true
+  end
+
   def remove_commisions_from_destroyed_user
     # remove web dev commisions
     web_dev = Member.web_dev
@@ -218,6 +234,14 @@ class Member < ApplicationRecord
     end
   end
 
+  def should_validate_region
+    if self.region_name.blank?
+      errors.add(:region_name, "can't be empty")
+    elsif Region.where(name: self.region_name.strip).count > 0
+      errors.add(:region_name, "has already been taken")
+    end
+  end
+
   def update_network_commisions
     network_upline = Member.find(self.upline_id_was)
 
@@ -240,6 +264,21 @@ class Member < ApplicationRecord
   def set_initial_password
     self.password = self.member_id
     self.password_confirmation = self.member_id
+  end
+
+  def should_validate_registration_quota
+    region_admin = Member.where(the_region_admin: true, region_id: self.region_id).first
+    if region_admin && region_admin.member_registration_quota.zero?
+      errors.add(:member_registration_quota, "is empty")
+    end
+  end
+
+  def decrease_registration_quota
+    region_admin = Member.where(the_region_admin: true, region_id: self.region_id).first
+    if region_admin
+      updated_quota = region_admin.member_registration_quota - 1
+      region_admin.update_column :member_registration_quota, updated_quota
+    end
   end
 
 end

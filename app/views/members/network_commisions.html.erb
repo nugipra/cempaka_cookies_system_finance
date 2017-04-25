@@ -29,6 +29,10 @@
     <h3 class="panel-title">All Network Commisions</h3>
   </div>
   <div class="panel-body">
+    <% if @network_commisions.size.zero? %>
+      You don't have network commisions yet
+    <% else %>
+
     <table class="table table-striped">
       <thead>
         <tr>
@@ -65,6 +69,8 @@
     </table>
 
     <%= will_paginate @network_commisions, class: 'pagination' %>
+
+    <% end %>
   </div>
 </div>
 

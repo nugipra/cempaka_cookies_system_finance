@@ -39,12 +39,21 @@
                       <%= link_to "Search", search_path %>
                     </li>
                   <% else %>
-                    <li class="<%= params[:controller] == "members" && params[:action] == "network_commisions" ? "active" : "" %>">
-                      <%= link_to "Network Commisions", network_commisions_member_path(current_member) %>
-                    </li>
-                    <li class="<%= params[:controller] == "members" && params[:action] == "wallet_history" ? "active" : "" %>">
-                      <%= link_to "Wallet", wallet_history_member_path %>
-                    </li>
+                    <% if current_member.the_region_admin? %>
+                      <li class="<%= params[:controller] == "members" ? "active" : "" %>">
+                        <%= link_to "Region Members", members_path %>
+                      </li>
+                      <li class="<%= params[:controller] == "search" ? "active" : "" %>">
+                        <%= link_to "Search", search_path %>
+                      </li>
+                    <% else %>
+                      <li class="<%= params[:controller] == "members" && params[:action] == "network_commisions" ? "active" : "" %>">
+                        <%= link_to "Network Commisions", network_commisions_member_path(current_member) %>
+                      </li>
+                      <li class="<%= params[:controller] == "members" && params[:action] == "wallet_history" ? "active" : "" %>">
+                        <%= link_to "Wallet", wallet_history_member_path %>
+                      </li>
+                    <% end %>
                   <% end %>
                 </ul>
               <% end %>

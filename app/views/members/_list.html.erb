@@ -9,7 +9,7 @@
         <th>Member ID</th>
         <th>Fullname</th>
         <th>Email</th>
-        <th>Upline</th>
+        <th>Invited by</th>
         <% if show_wallet_balance %>
           <th>Wallet balance</th>
         <% end %>
@@ -26,9 +26,20 @@
       <% members.each do |member| %>
         <tr>
           <td><%= link_to member.member_id, member %></td>
-          <td><%= link_to member.fullname, member %></td>
+          <td>
+            <%= link_to member.fullname, member %>
+            <%= content_tag(:span, "REGION ADMIN", class: "label label-success") if member.the_region_admin? %>
+          </td>
           <td><%= member.email %></td>
-          <td><%= link_to member.upline.fullname, member.upline if member.upline %></td>
+          <td>
+            <% if member.upline %>
+              <% if current_member.the_admin? || (current_member.the_region_admin? && current_member.region_id == member.upline.region_id) %>
+                <%= link_to(member.upline.fullname, member.upline) %>
+              <% else %>
+                <%= member.upline.fullname %>
+              <% end %>
+            <% end %>
+          </td>
           <% if show_wallet_balance %>
             <td><%= link_to number_with_delimiter(member.wallet_balance, delimiter: ","), wallet_transactions_path(member) %></td>
           <% end %>
@@ -39,7 +50,7 @@
             <td><%= link_to 'Show', member %></td>
             <td><%= link_to 'Edit', edit_member_path(member) %></td>
             <td>
-              <% unless member.core_member? %>
+              <% if !member.core_member? && current_member.the_admin? %>
                 <%= link_to 'Destroy', member, method: :delete, data: { confirm: 'Are you sure?' } %>
               <% else %>
                 &nbsp;
