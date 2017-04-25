@@ -275,7 +275,7 @@ class Member < ApplicationRecord
 
   def decrease_registration_quota
     region_admin = Member.where(the_region_admin: true, region_id: self.region_id).first
-    if region_admin
+    if region_admin && self != region_admin
       updated_quota = region_admin.member_registration_quota - 1
       region_admin.update_column :member_registration_quota, updated_quota
     end
