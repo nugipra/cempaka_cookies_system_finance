@@ -10,6 +10,8 @@ Rails.application.routes.draw do
       get :web_development_commisions
       get :add_registration_quota
       post :process_add_registration_quota
+      get :upgrade
+      patch :process_upgrade
     end
     member do
       resources :wallet_transactions, only: [:index, :new, :create] do

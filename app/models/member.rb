@@ -13,12 +13,12 @@ class Member < ApplicationRecord
   validates_uniqueness_of :email, if: Proc.new{|m| m.email.present?}
   validate :should_not_update_member_id_for_core_member, on: :update
   validate :should_validate_registration_quota, on: :create
-  validate :should_validate_region, on: :create, if:  Proc.new{|m| m.set_region_admin == "1"}
+  validate :should_validate_region, if:  Proc.new{|m| m.set_region_admin == "1"}
   validates_presence_of :package, unless: Proc.new{|m| m.core_member?}
   validates_presence_of :email, if:  Proc.new{|m| m.set_region_admin == "1"}
 
   before_create :set_depth
-  before_create :create_region_for_admin, if:  Proc.new{|m| m.set_region_admin == "1"}
+  before_save :create_region_for_admin, if: Proc.new{|m| m.set_region_admin == "1"}
   #before_update :update_network_commisions, if: Proc.new{|m| m.upline_id_changed?}
   after_create :generate_network_commisions
   after_create :generate_wallet_transaction_from_web_dev_commision
@@ -189,9 +189,15 @@ class Member < ApplicationRecord
   private
 
   def create_region_for_admin
-    region = Region.create(:name => self.region_name.strip)
-    self.region_id = region.id
-    self.the_region_admin = true
+    unless self.the_region_admin?
+      region = Region.create(:name => self.region_name.strip)
+      unless self.new_record?
+        self.descendants.where(region_id: self.region_id).update_all(region_id: region.id)
+      end
+
+      self.region_id = region.id
+      self.the_region_admin = true     
+    end
   end
 
   def remove_commisions_from_destroyed_user
@@ -267,17 +273,21 @@ class Member < ApplicationRecord
   end
 
   def should_validate_registration_quota
-    region_admin = Member.where(the_region_admin: true, region_id: self.region_id).first
-    if region_admin && region_admin.member_registration_quota.zero?
-      errors.add(:member_registration_quota, "is empty")
+    unless self.core_member?
+      region_admin = Member.where(the_region_admin: true, region_id: self.region_id).first
+      if region_admin && region_admin.member_registration_quota.zero?
+        errors.add(:member_registration_quota, "is empty")
+      end
     end
   end
 
   def decrease_registration_quota
-    region_admin = Member.where(the_region_admin: true, region_id: self.region_id).first
-    if region_admin && self != region_admin
-      updated_quota = region_admin.member_registration_quota - 1
-      region_admin.update_column :member_registration_quota, updated_quota
+    unless self.core_member?
+      region_admin = Member.where(the_region_admin: true, region_id: self.region_id).first
+      if region_admin && self != region_admin
+        updated_quota = region_admin.member_registration_quota - 1
+        region_admin.update_column :member_registration_quota, updated_quota
+      end
     end
   end
 

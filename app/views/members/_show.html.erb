@@ -98,6 +98,10 @@
         <button class="btn btn-primary" onClick="location.href='<%= add_registration_quota_member_path(@member.id) %>'; return false;">Add Member Registration Quota</button>
       <% end %>
     <% end %>
+
+    <% if current_member.the_admin? && !@member.core_member? && !@member.the_region_admin? %>
+     <button class="btn btn-danger" onClick="location.href='<%= upgrade_member_path(@member) %>'; return false;">Upgrade to Region Admin</button>
+    <% end %>
   </div>
 </div>
 

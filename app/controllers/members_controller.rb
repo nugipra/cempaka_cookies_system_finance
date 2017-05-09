@@ -3,9 +3,13 @@ class MembersController < ApplicationController
   before_action :admin_or_region_admin_required, except: [
     :change_password, :update_password, :wallet_history, :network_commisions
   ]
+  before_action :admin_required, only: [
+    :upgrade, :process_upgrade
+  ]
   before_action :set_member, only: [
     :show, :edit, :update, :destroy, :network_commisions, :web_development_commisions,
-    :add_registration_quota, :process_add_registration_quota
+    :add_registration_quota, :process_add_registration_quota,
+    :upgrade, :process_upgrade
   ]
 
   # GET /members
@@ -186,6 +190,28 @@ class MembersController < ApplicationController
   def wallet_history
     @member = current_member
     @wallet_transactions = @member.wallet_transactions.includes(:remarks_object).order("created_at DESC, id DESC").paginate(:page => params[:page], :per_page => 15)
+  end
+
+  def upgrade
+    if @member.core_member? || @member.the_region_admin?
+      redirect_to @member
+      return
+    end
+  end
+
+  def process_upgrade
+    if @member.core_member? || @member.the_region_admin?
+      redirect_to @member
+      return
+    end
+
+    @member.set_region_admin = "1"
+
+    if @member.update(member_params)
+      redirect_to @member, notice: 'Membership was successfully upgraded.'
+    else
+      render :upgrade
+    end
   end
 
   private

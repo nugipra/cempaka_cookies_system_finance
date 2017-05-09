@@ -1,0 +1,53 @@
+<h1>Upgrade Membership</h1>
+
+<%= form_for(@member, :url => process_upgrade_member_path(@member), class: "form-group") do |f| %>
+  <%= hidden_field_tag :region, params[:region] %>
+
+  <% if @member.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@member.errors.count, "error") %> prohibited this member from being saved:</h2>
+
+      <ul>
+      <% @member.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="form-group">
+    <%= f.label :region_name, "Region Name" %>
+    <%= f.text_field :region_name, autofocus: true, class: "form-control" %>
+  </div>
+
+  <div class="form-group">
+    <%= f.label :member_id, "Member ID" %>
+    <%= f.text_field :member_id, autofocus: !(@member.new_record? && params[:region] == "new"), class: "form-control" %>
+  </div>
+
+  <div class="form-group">
+    <%= f.label :fullname %>
+    <%= f.text_field :fullname, class: "form-control" %>
+  </div>
+
+  <div class="form-group">
+    <%= f.label :email %>
+    <%= f.email_field :email, class: "form-control" %>
+  </div>
+
+  <div class="form-group">
+    <%= f.label :upline_id, "Invited by" %>
+    <%= f.collection_select :upline_id, Member.where(id: @member.upline_id), :id, :name_with_member_id, {include_blank: false}, {class: "form-control", disabled: true} %>
+  </div>
+
+  <button type="submit" class="btn btn-danger">UPGRADE TO REGION MEMBER</button>
+
+  <%
+    if params[:from].present?
+      back_path = params[:from]
+    else
+      back_path = member_path(@member)
+    end
+  %>
+  <button class="btn btn-default" onClick="location.href='<%= back_path %>'; return false;">Cancel</button>
+<% end %>

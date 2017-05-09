@@ -14,7 +14,7 @@
     </div>
   <% end %>
 
-  <% if member.set_region_admin %>
+  <% if member.set_region_admin == "1" %>
     <div class="form-group">
       <%= f.label :region_name, "Region Name" %>
       <%= f.text_field :region_name, autofocus: !(@member.new_record? && params[:region] == "new"), class: "form-control", disabled: !f.object.new_record? && f.object.core_member? %>
