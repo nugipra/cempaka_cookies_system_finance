@@ -8,8 +8,10 @@ class Transaction < ApplicationRecord
   before_save :update_total
   after_create :generate_wallet_transaction, if: Proc.new{|t| t.payment_type == "wallet"}
   after_create :generate_referral_commision, if: Proc.new{|t| t.referral}
+  after_create :generate_product_commision
 
   REFERRAL_COMMISION = {referrer: 5000, web_dev: 2500}
+  PRODUCT_COMMISION = {retail: 500, package: 1000}
 
   def update_total
     self.total = self.quantity * self.price
@@ -72,5 +74,22 @@ class Transaction < ApplicationRecord
         remarks_object_id: self.id,
         remarks_object_type: "Transaction"
       )
+    end
+
+    def generate_product_commision
+      commission = Transaction::PRODUCT_COMMISION[self.transaction_type.to_sym] * self.quantity
+      upline = self.member.upline
+
+      if upline
+        WalletTransaction.create(
+          member_id: upline.id,
+          amount: commission,
+          remarks: "#{self.quantity_with_name} from #{self.member.fullname}",
+          created_at: self.created_at,
+          transaction_type: "product commision",
+          remarks_object_id: self.id,
+          remarks_object_type: "Transaction"
+        )
+      end
     end
 end

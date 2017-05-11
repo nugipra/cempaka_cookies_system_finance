@@ -10,7 +10,7 @@ class WalletTransaction < ApplicationRecord
   before_create :adjust_amount, :update_balance 
   after_create :update_member_wallet_balance
 
-  VALID_TRANSACTION_TYPES = ["network commision", "withdraw", "deposit", "referral commision", "transaction payment", "web development commision"]
+  VALID_TRANSACTION_TYPES = ["network commision", "withdraw", "deposit", "referral commision", "transaction payment", "web development commision", "product commision"]
 
   private
     def wallet_transaction_type_should_be_valid

@@ -22,6 +22,11 @@
   </div>
 
   <div class="form-group">
+    <%= f.label :transaction_type, "Product type" %>
+    <%= f.select :transaction_type, options_for_select([["Retail", 'retail'], ["Package", 'package']], f.object.transaction_type), {include_blank: false}, class: "form-control" %>
+  </div>
+
+  <div class="form-group">
     <%= f.label :price %>
     <%= f.number_field :price, class: "form-control" %>
   </div>

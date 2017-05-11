@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170425130117) do
+ActiveRecord::Schema.define(version: 20170511083301) do
 
   create_table "members", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string   "member_id"
@@ -74,12 +74,13 @@ ActiveRecord::Schema.define(version: 20170425130117) do
     t.integer  "price"
     t.integer  "quantity"
     t.text     "note",               limit: 65535
-    t.datetime "created_at",                                        null: false
-    t.datetime "updated_at",                                        null: false
+    t.datetime "created_at",                                          null: false
+    t.datetime "updated_at",                                          null: false
     t.integer  "total"
     t.string   "payment_type",                     default: "cash"
     t.boolean  "referral",                         default: false
     t.integer  "referral_commision",               default: 0
+    t.string   "transaction_type",                 default: "retail"
     t.index ["member_id"], name: "index_transactions_on_member_id", using: :btree
   end
 
