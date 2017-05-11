@@ -84,7 +84,7 @@ class Transaction < ApplicationRecord
         WalletTransaction.create(
           member_id: upline.id,
           amount: commission,
-          remarks: "#{self.quantity_with_name} from #{self.member.fullname}",
+          remarks: "#{self.quantity_with_name} bought by #{self.member.fullname}",
           created_at: self.created_at,
           transaction_type: "product commision",
           remarks_object_id: self.id,
