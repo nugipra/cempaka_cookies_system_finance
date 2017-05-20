@@ -104,7 +104,7 @@
       <% end %>
     <% end %>
 
-    <% if current_member.the_admin? && !@member.core_member? && !@member.the_region_admin? %>
+    <% if current_member.the_admin? && !@member.core_member? && !@member.the_region_admin? && !@member.app_marketer? %>
      <button class="btn btn-danger" onClick="location.href='<%= upgrade_member_path(@member) %>'; return false;">Upgrade to Region Admin</button>
     <% end %>
   </div>

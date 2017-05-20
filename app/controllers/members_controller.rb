@@ -193,7 +193,7 @@ class MembersController < ApplicationController
   end
 
   def upgrade
-    if @member.core_member? || @member.the_region_admin?
+    if @member.core_member? || @member.the_region_admin? || @member.app_marketer?
       redirect_to @member
       return
     end
