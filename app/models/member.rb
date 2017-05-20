@@ -42,6 +42,7 @@ class Member < ApplicationRecord
   CORE_MEMBER_IDS   = [COMPANY_MEMBER_ID, OWNER_MEMBER_ID, WEB_DEV_MEMBER_ID, ADMIN_MEMBER_ID]
 
   WEB_DEV_COMMISION = {bronze: 2000, silver: 1375, retail: 1375}
+  WEB_DEV_COMMISION_APP_MARKETER = {bronze: 200, silver: 135, retail: 135}
 
   after_destroy :remove_commisions_from_destroyed_user
 
@@ -74,7 +75,11 @@ class Member < ApplicationRecord
   end
 
   def web_dev_commision
-    Member::WEB_DEV_COMMISION[self.package.to_sym]
+    if self.app_marketer?
+      return Member::WEB_DEV_COMMISION_APP_MARKETER[self.package.to_sym]
+    else
+      return Member::WEB_DEV_COMMISION[self.package.to_sym]
+    end
   end
 
   def name_with_member_id
@@ -139,11 +144,17 @@ class Member < ApplicationRecord
   end
 
   def generate_wallet_transaction_from_web_dev_commision
+    if self.app_marketer?
+      remarks = "joined as new app marketer"
+    else
+      remarks = "joined as new reseller (#{self.package} package)"
+    end
+
     unless self.core_member?
       WalletTransaction.create(
         member_id: Member.web_dev.id,
-        amount: Member::WEB_DEV_COMMISION[self.package.to_sym],
-        remarks: "joined as new reseller (#{self.package} package)",
+        amount: self.web_dev_commision,
+        remarks: remarks,
         created_at: self.created_at,
         transaction_type: "web development commision",
         remarks_object_id: self.id,
