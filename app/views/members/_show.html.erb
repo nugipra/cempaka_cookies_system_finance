@@ -42,8 +42,13 @@
           </td>
         </tr>
         <tr>
-          <td>Package</td>
-          <td><%= @member.package.titleize %></td>
+          <% if @member.app_marketer? %>
+            <td>Joined Date</td>
+            <td><%= @member.created_at.strftime("%B %d, %Y") %></td>
+          <% else %>
+            <td>Package</td>
+            <td><%= @member.package.titleize %></td>
+          <% end %>
           <td>Total network commisions</td>
           <td>
             <% unless @total_descendants.zero? %>
@@ -77,7 +82,7 @@
           Add <span class="caret"></span>
         </button>
         <ul class="dropdown-menu">
-          <li><%= link_to "Member", new_member_path(:upline_id => @member.id, from: member_path(@member)) %></li>
+          <li><%= link_to member_label(@member), new_member_path(:upline_id => @member.id, from: member_path(@member)) %></li>
           <li><%= link_to "Transaction", new_transaction_path(:member_id => @member.id, from: member_path(@member)) %></li>
           <li role="separator" class="divider"></li>
           <li><%= link_to "Region Admin", new_member_path(:upline_id => @member.id, region: "new", from: member_path(@member)) %></li>

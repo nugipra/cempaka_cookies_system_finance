@@ -1,3 +1,3 @@
-<h1><%= @member.set_region_admin == "1" ? "New Region Admin" : "New Member"%></h1>
+<h1><%= @member.set_region_admin == "1" ? "New Region Admin" : "New #{member_label(@member.upline)}"%></h1>
 
 <%= render 'form', member: @member %>

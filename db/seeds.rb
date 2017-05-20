@@ -19,7 +19,7 @@ User.create(email: "admin@cempakacookies.com", password: "theAdmin", password_co
 
 region = Region.where(name: "Bandung").first_or_create
 
-company = Member.create(member_id: Member::COMPANY_MEMBER_ID, fullname: "dDanus Cempaka Cookies", email: "cempaka88cookies@gmail.com", region_id: region.id)
+company = Member.create(member_id: Member::COMPANY_MEMBER_ID, fullname: "dDanus Cempaka Cookies", email: "cempaka88cookies@gmail.com", region_id: region.id, app_marketer: true)
 company.update_column :the_admin, true
 
 owner = Member.create(member_id: Member::OWNER_MEMBER_ID, fullname: "Andri Hidayatulloh / Kenni Santika", email: "andri.online@gmail.com", upline_id: company.id, region_id: region.id)

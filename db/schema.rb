@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170511083301) do
+ActiveRecord::Schema.define(version: 20170518115120) do
 
   create_table "members", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string   "member_id"
@@ -38,6 +38,7 @@ ActiveRecord::Schema.define(version: 20170511083301) do
     t.integer  "region_id"
     t.boolean  "the_region_admin",                        default: false
     t.integer  "member_registration_quota",               default: 0
+    t.boolean  "app_marketer",                            default: false
   end
 
   create_table "network_commision_payments", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|

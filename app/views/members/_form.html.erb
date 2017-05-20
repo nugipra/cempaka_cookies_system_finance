@@ -53,10 +53,12 @@
     </div>
   <% end %>
 
-  <div class="form-group">
-    <%= f.label :package %>
-    <%= f.select :package, options_for_select([["Bronze", "bronze"], ["Silver", "silver"], ["Retail", "retail"]], @member.package), {}, {class: "form-control", disabled: !@member.new_record?} %>
-  </div>
+  <% unless member.upline.app_marketer? %>
+    <div class="form-group">
+      <%= f.label :package %>
+      <%= f.select :package, options_for_select([["Bronze", "bronze"], ["Silver", "silver"], ["Retail", "retail"]], @member.package), {}, {class: "form-control", disabled: !@member.new_record?} %>
+    </div>
+  <% end %>
 
   <div class="form-group">
     <%= f.label :upline_id, "Invited by" %>

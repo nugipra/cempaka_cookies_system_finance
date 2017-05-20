@@ -9,7 +9,7 @@ class NetworkCommision < ApplicationRecord
     {
 	   member_id: self.member_id,
 	   amount: self.commision,
-	   remarks: "joined as new reseller",
+	   remarks: "joined as new #{self.member.app_marketer? ? 'app marketer' : 'reseller'}",
 	   created_at: self.created_at,
 	   transaction_type: "network commision",
 	   remarks_object_id: self.descendant_id,

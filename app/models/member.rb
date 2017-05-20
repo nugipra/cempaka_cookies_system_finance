@@ -24,6 +24,7 @@ class Member < ApplicationRecord
   after_create :generate_wallet_transaction_from_web_dev_commision
   after_create :decrease_registration_quota
   before_save :set_initial_password, if: :need_to_set_initial_password?
+  before_save :determine_app_marketer
 
   acts_as_nested_set parent_column: "upline_id"
 
@@ -115,14 +116,20 @@ class Member < ApplicationRecord
     levels = 1
     while levels <= 10 && network_upline.present?
       if network_upline == Member.company
+        commision = (levels..10).to_a.collect{|l| NETWORK_LEVEL_FEE[l-1]}.sum
+        commision = commision * 0.1 if self.app_marketer
+
         network_upline.network_commisions.create(
           descendant_id: self.id,
-          commision: (levels..10).to_a.collect{|l| NETWORK_LEVEL_FEE[l-1]}.sum
+          commision: commision
         )
       else
+        commision = network_upline.get_network_fee_from_descendant(self)
+        commision = commision * 0.1 if self.app_marketer
+
         network_upline.network_commisions.create(
           descendant_id: self.id,
-          commision: network_upline.get_network_fee_from_descendant(self)
+          commision: commision
         )
       end
 
@@ -288,6 +295,12 @@ class Member < ApplicationRecord
         updated_quota = region_admin.member_registration_quota - 1
         region_admin.update_column :member_registration_quota, updated_quota
       end
+    end
+  end
+
+  def determine_app_marketer
+    unless self.core_member?
+      self.app_marketer = true if self.upline && self.upline.app_marketer?
     end
   end
 
